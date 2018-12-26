@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "gulp": "^4.0.0",
+    "gulp-image-resize": "^0.13.0",
     "gulp-imagemin": "^5.0.3",
     "gulp-minify": "^3.1.0",
     "gulp-remove-html-comments": "^1.0.1",
