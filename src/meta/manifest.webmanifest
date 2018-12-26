@@ -1,0 +1,26 @@
+{
+  "lang": "en",
+  "dir": "ltr",
+  "name": "ReplaceTitle",
+  "short_name": "ReplaceTitle",
+  "description": "ReplaceDescription",
+  "start_url": "/?homescreen=1",
+  "background_color": "#000000",
+  "theme_color": "#0fff",
+  "icons": [{
+    "src": "icon/lowres.png",
+    "sizes": "64x64"
+  }, {
+    "src": "icon/middleres.png",
+    "sizes": "128x128"
+  },{
+    "src": "icon/highres.png",
+    "sizes": "256x256"
+  }],
+  "display": "fullscreen",
+  "serviceworker": {
+    "src": "../js/sw/sw.js",
+    "scope": "/home/",
+    "update_via_cache": "none"
+  }
+}

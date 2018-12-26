@@ -1,0 +1,12 @@
+@import 'reset';
+@import 'normalize';
+@import 'variables';
+
+
+body {
+  background-color: $white;
+}
+
+h1 {
+	font-size: 2em;
+}
