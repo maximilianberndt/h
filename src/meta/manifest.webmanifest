@@ -8,13 +8,13 @@
   "background_color": "#000000",
   "theme_color": "#0fff",
   "icons": [{
-    "src": "icon/lowres.png",
+    "src": "icon-lowres.png",
     "sizes": "64x64"
   }, {
-    "src": "icon/middleres.png",
+    "src": "icon-midres.png",
     "sizes": "128x128"
   },{
-    "src": "icon/highres.png",
+    "src": "icon-highres.png",
     "sizes": "256x256"
   }],
   "display": "fullscreen",

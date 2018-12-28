@@ -9,7 +9,11 @@ const gulp = require('gulp'),
 	imagemin = require('gulp-imagemin'),
 	pngquant = require('imagemin-pngquant'),
 	mozjpeg = require('imagemin-mozjpeg'),
-    webserver = require('gulp-webserver');
+    webserver = require('gulp-webserver'),
+    imageResize = require('gulp-image-resize'),
+    rename = require("gulp-rename"),
+    merge = require('merge-stream'),
+    ico = require('gulp-to-ico');
 
 const paths = {
 	src: 'src',
@@ -18,14 +22,17 @@ const paths = {
 	srcSASS: 'src/sass/**/*.scss',
     srcJS: 'src/js/**/*.js',
     srcIMG: 'src/img/**/*',
-    srcRobots: 'src/robots.txt',
-    srcManifest: 'src/manifest.webmanifest',
+    srcROBOTS: 'src/robots.txt',
+    srcMANIFEST: 'src/meta/manifest.webmanifest',
+    srcICON: 'src/meta/icon.png',
+    srcOG: 'src/meta/og.jpg',
 
     dist: 'dist',
     distCSS: 'dist/css',
     distHTML: 'dist/html',
     distJS: 'dist/js',
     distIMG: 'dist/img',
+    distMETA: 'dist/meta',
 }
  
 
@@ -104,25 +111,102 @@ gulp.task('dist:js', function () {
 // Minify images
 gulp.task('dist:img', () =>
 	gulp.src(paths.srcIMG)
+        .pipe(imageResize({
+          width : 1200,
+          crop : false,
+          upscale : true,
+          filter: "Catrom"
+        }))
 		.pipe(imagemin([
-	    	pngquant({quality: '50'}),
-	      	mozjpeg({quality: '50'})
+	    	pngquant({quality: '80'}),
+	      	mozjpeg({quality: '80'})
 	    ], {
 			verbose: true
 		}))
 		.pipe(gulp.dest(paths.distIMG))
 );
 
+// Create icons for webmanifest 
+// sizes: 256x256, 128x128, 65x64
+gulp.task('dist:icons', function () {
+    let icons = [
+        { 
+            suffix: '-lowres',
+            size: 64
+        }, {
+            suffix: '-midres',
+            size: 256
+        }, {
+            suffix: '-highres',
+            size: 512
+        }
+    ];
+    var streams = [];
 
-// Copy robots.txt und webmanifest 
-gulp.task('dist:copy', function () {
-	return gulp.src([
-    	paths.srcRobots,
-    	paths.srcManifest
-    ]).pipe(gulp.dest(paths.dist));
+    icons.forEach(function(icon) {
+        var stream = gulp.src(paths.srcICON)
+            .pipe(imageResize({
+              width : icon.size,
+              height : icon.size,
+              crop : false,
+              upscale : true,
+              filter: "Catrom"
+            }))
+            .pipe(imagemin([
+                pngquant({quality: '80'}),
+                mozjpeg({quality: '80'})
+            ]))
+            .pipe(rename(function (path) { path.basename += icon.suffix; }))
+            .pipe(gulp.dest(paths.distMETA))
+        streams.push(stream);
+    });
+    return merge(streams);
 });
 
-gulp.task('dist', gulp.series('dist:copy', 'dist:html', 'dist:js', 'dist:css', 'dist:img'));
+// Generate og image with 1800x1200 size
+gulp.task('dist:og', function(){
+    return gulp.src(paths.srcOG)
+        .pipe(imageResize({
+              width: 1800,
+              height: 1200,
+              crop: false,
+              upscale : true,
+              filter: "Catrom"
+            }))
+        .pipe(gulp.dest(paths.distMETA));
+});
+
+// Generate favicon with 16x16 size
+gulp.task('dist:favicon', function(){
+    return gulp.src(paths.srcICON)
+        .pipe(imageResize({
+              width : 16,
+              height : 16,
+              crop : false,
+              upscale : true,
+              filter: "Catrom"
+            }))
+        .pipe(ico('favicon.ico'))
+        .pipe(gulp.dest(paths.distMETA));
+});
+
+// Copy robots.txt
+gulp.task('dist:copyRobots', function () {
+	return gulp.src(paths.srcROBOTS)
+        .pipe(gulp.dest(paths.dist));
+});
+
+// Copy webmanifest 
+gulp.task('dist:copyMeta', function () {
+    return gulp.src(paths.srcMANIFEST)
+        .pipe(gulp.dest(paths.distMETA));
+});
+
+// All tasks to generate meta
+gulp.task('dist:meta', gulp.series('dist:copyRobots', 'dist:copyMeta', 'dist:favicon', 'dist:icons', 'dist:og'))
+
+
+gulp.task('dist', gulp.series('dist:html', 'dist:js', 'dist:css', 'dist:img', 'dist:meta'));
 
 
 
