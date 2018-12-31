@@ -9,11 +9,11 @@ const gulp = require('gulp'),
 	imagemin = require('gulp-imagemin'),
 	pngquant = require('imagemin-pngquant'),
 	mozjpeg = require('imagemin-mozjpeg'),
-    webserver = require('gulp-webserver'),
-    imageResize = require('gulp-image-resize'),
-    rename = require("gulp-rename"),
-    merge = require('merge-stream'),
-    ico = require('gulp-to-ico');
+  webserver = require('gulp-webserver'),
+  imageResize = require('gulp-image-resize'),
+  rename = require("gulp-rename"),
+  merge = require('merge-stream'),
+  ico = require('gulp-to-ico');
 
 const paths = {
 	src: 'src',
@@ -111,12 +111,6 @@ gulp.task('dist:js', function () {
 // Minify images
 gulp.task('dist:img', () =>
 	gulp.src(paths.srcIMG)
-        .pipe(imageResize({
-          width : 1200,
-          crop : false,
-          upscale : true,
-          filter: "Catrom"
-        }))
 		.pipe(imagemin([
 	    	pngquant({quality: '80'}),
 	      	mozjpeg({quality: '80'})
