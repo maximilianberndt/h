@@ -1,14 +1,14 @@
 'use strict';
  
 const gulp = require('gulp'),
-	sass = require('gulp-sass'),
-	uglifycss = require('gulp-uglifycss'),
-	htmlmin = require('gulp-htmlmin'),
-	removeHtmlComments = require('gulp-remove-html-comments'),
-	minify = require('gulp-minify'),
-	imagemin = require('gulp-imagemin'),
-	pngquant = require('imagemin-pngquant'),
-	mozjpeg = require('imagemin-mozjpeg'),
+  sass = require('gulp-sass'),
+  uglifycss = require('gulp-uglifycss'),
+  htmlmin = require('gulp-htmlmin'),
+  removeHtmlComments = require('gulp-remove-html-comments'),
+  minify = require('gulp-minify'),
+  imagemin = require('gulp-imagemin'),
+  pngquant = require('imagemin-pngquant'),
+  mozjpeg = require('imagemin-mozjpeg'),
   webserver = require('gulp-webserver'),
   imageResize = require('gulp-image-resize'),
   rename = require("gulp-rename"),
@@ -16,16 +16,19 @@ const gulp = require('gulp'),
   ico = require('gulp-to-ico');
 
 const paths = {
-	src: 'src',
+  src: 'src',
     srcHTML: 'src/**/*.html',
     srcCSS: 'src/css/*.css',
-	srcSASS: 'src/sass/**/*.scss',
+  srcSASS: 'src/sass/**/*.scss',
     srcJS: 'src/js/**/*.js',
     srcIMG: 'src/img/**/*',
+    srcSVG: 'src/img/**/*.svg',
+    srcMP4: 'src/img/**/*.mp4',
     srcROBOTS: 'src/robots.txt',
     srcMANIFEST: 'src/meta/manifest.webmanifest',
     srcICON: 'src/meta/icon.png',
     srcOG: 'src/meta/og.jpg',
+    srcFONTS: 'src/fonts/*',
 
     dist: 'dist',
     distCSS: 'dist/css',
@@ -33,11 +36,12 @@ const paths = {
     distJS: 'dist/js',
     distIMG: 'dist/img',
     distMETA: 'dist/meta',
+    distFONTS: 'dist/fonts',
 }
  
 
 // ---------------------------------------
-//	Develop
+//  Develop
 // ---------------------------------------
 
 // Compile Sass
@@ -54,7 +58,7 @@ gulp.task('dev:webserver', function() {
     return gulp.src(paths.src)
         .pipe(webserver({
             port: 8000,
-            livereload: true,
+            livereload: false,
             open: true
         }));
 });
@@ -72,12 +76,12 @@ gulp.task('default', gulp.series('dev:webserver', 'dev:watch'));
 
 
 // ---------------------------------------
-//	Distribute
+//  Distribute
 // ---------------------------------------
 
-// 	Minify CSS
+//   Minify CSS
 gulp.task('css', function () {
-  	return gulp.src(paths.srcCSS)
+    return gulp.src(paths.srcCSS)
     .pipe(uglifycss({
       "uglyComments": true
     }))
@@ -89,7 +93,7 @@ gulp.task('dist:css', gulp.series('sass', 'css'));
 
 // Minify all css files
 gulp.task('dist:html', () => {
-	return gulp.src(paths.srcHTML)
+  return gulp.src(paths.srcHTML)
     .pipe(htmlmin({ collapseWhitespace: true }))
     .pipe(removeHtmlComments())
     .pipe(gulp.dest(paths.dist));
@@ -97,8 +101,8 @@ gulp.task('dist:html', () => {
 
 // Minify js file and service worker js file
 gulp.task('dist:js', function () {
-	return gulp.src(paths.srcJS)
-	.pipe(minify({
+  return gulp.src(paths.srcJS)
+  .pipe(minify({
         ext: {
             min:'.js'
         },
@@ -110,15 +114,27 @@ gulp.task('dist:js', function () {
 
 // Minify images
 gulp.task('dist:img', () =>
-	gulp.src(paths.srcIMG)
-		.pipe(imagemin([
-	    	pngquant({quality: '80'}),
-	      	mozjpeg({quality: '80'})
-	    ], {
-			verbose: true
-		}))
-		.pipe(gulp.dest(paths.distIMG))
+  gulp.src(paths.srcIMG)
+    .pipe(imagemin([
+        pngquant({quality: '80'}),
+          mozjpeg({quality: '80'})
+      ], {
+      verbose: true
+    }))
+    .pipe(gulp.dest(paths.distIMG))
 );
+
+// Copy SVG
+gulp.task('dist:svg', () =>
+  gulp.src(paths.srcSVG)
+    .pipe(gulp.dest(paths.distIMG))
+);
+
+// Copy mp4
+gulp.task('dist:copyMP4', function () {
+    return gulp.src(paths.srcMP4)
+        .pipe(gulp.dest(paths.distIMG));
+});
 
 // Create icons for webmanifest 
 // sizes: 256x256, 128x128, 65x64
@@ -186,7 +202,7 @@ gulp.task('dist:favicon', function(){
 
 // Copy robots.txt
 gulp.task('dist:copyRobots', function () {
-	return gulp.src(paths.srcROBOTS)
+  return gulp.src(paths.srcROBOTS)
         .pipe(gulp.dest(paths.dist));
 });
 
@@ -200,11 +216,4 @@ gulp.task('dist:copyMeta', function () {
 gulp.task('dist:meta', gulp.series('dist:copyRobots', 'dist:copyMeta', 'dist:favicon', 'dist:icons', 'dist:og'))
 
 
-gulp.task('dist', gulp.series('dist:html', 'dist:js', 'dist:css', 'dist:img', 'dist:meta'));
-
-
-
-
-
-
-
+gulp.task('dist', gulp.series('dist:html', 'dist:js', 'dist:css', 'dist:img', 'dist:copyMP4', 'dist:svg', 'dist:meta'));
