@@ -4,7 +4,7 @@
 // Service Worker initialisieren
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/js/sw/sw.js');
+    navigator.serviceWorker.register('../sw.js');
   });
 }
 
