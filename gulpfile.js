@@ -44,12 +44,12 @@ const paths = {
     srcFONTS: 'src/assets/fonts/*',
 
     dist: 'dist',
-    distCSS: 'dist/css',
+    distCSS: 'dist/assets/css',
     distHTML: 'dist/html',
-    distJS: 'dist/js',
-    distIMG: 'dist/img',
-    distMETA: 'dist/meta',
-    distFONTS: 'dist/fonts',
+    distJS: 'dist/assets/js',
+    distIMG: 'dist/assets/img',
+    distMETA: 'dist/assets/meta',
+    distFONTS: 'dist/assets/fonts',
 }
  
 
@@ -162,7 +162,7 @@ gulp.task('dist:html', () => {
 
 // Minify js file and service worker js file
 gulp.task('dist:js', function () {
-  return gulp.src(paths.distJS)
+  return gulp.src('src/assets/js/*.js')
   .pipe(minify({
         ext: {
             min:'.js'
