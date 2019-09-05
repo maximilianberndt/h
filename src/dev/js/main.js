@@ -18,5 +18,7 @@ class App {
 }
 
 domready(function () {
-	new App();
+	console.log("Domready");
+	
+	window.A = new App();
 })

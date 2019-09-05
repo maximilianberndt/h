@@ -25,7 +25,8 @@ const gulp = require('gulp'),
 const paths = {
     src: 'src/',
     
-    srcDevHTML: 'src/dev/pages/**/*.html',
+    srcDevHTML: 'src/dev/pages/*.html',
+    srcDevWatchHTML: 'src/dev/pages/**/*.html',
     srcHTML: 'src/*.html',
 
     srcCSS: 'src/assets/css/*.css',
@@ -96,6 +97,9 @@ gulp.task('html', function() {
     .pipe(gulp.dest('./src'));
 });
 
+// gulp.task('cleanHtmlh', function(){
+//      return del('src/templates/**', {force:true});
+// });
 
 
 
@@ -113,7 +117,7 @@ gulp.task('dev:webserver', function() {
 gulp.task('dev:watch', function() {
     gulp.watch(paths.srcSASS, gulp.series('sass'));
     gulp.watch(paths.srcJS, gulp.series('js', 'cleanJs'));
-    gulp.watch(paths.srcDevHTML, gulp.series('html'));
+    gulp.watch(paths.srcDevWatchHTML, gulp.series('html'));
 });
 
 
