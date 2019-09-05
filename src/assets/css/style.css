@@ -415,8 +415,42 @@ template {
 [hidden] {
   display: none; }
 
-body {
-  background-color: #fff; }
+img {
+  width: 100%;
+  height: auto; }
 
-h1 {
-  font-size: 5em; }
+:root {
+  /*-------------- Colors --------------*/
+  --black: #1D1D1F;
+  --white: #F9F9F9;
+  /*-------------- Z Index --------------*/
+  --alwaysOnTop: 10;
+  --top: 10;
+  --middle: 5;
+  --bottom: -1; }
+
+/*-------- Grid System -------- */
+.grid {
+  width: 90vw;
+  margin-left: 5vw; }
+
+/* 
+	Define the width of elements 
+
+	returns partial of 100%
+*/
+/* 
+	Define the distance from the left of the element + padding
+
+	returns partial of 100%
+*/
+body {
+  font-family: 'Helvetica', sans-serif;
+  background-color: var(--white);
+  color: var(--black);
+  line-height: 1.4; }
+
+/* Font smoothing hack */
+html, html a {
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004); }

@@ -1,4 +1,13 @@
-$font: Helvetica, sans-serif;
+:root {
 
-$black: pink;
-$white: #fff;
+	/*-------------- Colors --------------*/
+	--black: #1D1D1F;
+	--white: #F9F9F9;
+
+
+	/*-------------- Z Index --------------*/
+	--alwaysOnTop: 10;
+	--top: 10;
+	--middle: 5;
+	--bottom: -1;	
+}

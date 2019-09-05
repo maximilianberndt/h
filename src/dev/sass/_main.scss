@@ -1,7 +1,14 @@
 body {
-  background-color: $white;
+	font-family: 'Helvetica', sans-serif;
+	
+	background-color: var(--white);
+	color: var(--black);
+
+	line-height: 1.4;
 }
 
-h1 {
-	font-size: 5em;
+/* Font smoothing hack */
+html, html a {
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
