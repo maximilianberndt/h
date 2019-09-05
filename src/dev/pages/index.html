@@ -1,0 +1,16 @@
+@@include('./templates/head.html')
+
+
+  <h1>Hello from h.</h1>
+
+
+  @@include('./templates/var.html', {
+    "name": "Max",
+    "age": 24,
+    "socials": {
+      "fb": "facebook.com/wtf",
+      "tw": "twitter.com/max"
+    }
+  })
+  	
+@@include('./templates/footer.html')

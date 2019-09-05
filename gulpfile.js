@@ -13,22 +13,34 @@ const gulp = require('gulp'),
   imageResize = require('gulp-image-resize'),
   rename = require("gulp-rename"),
   merge = require('merge-stream'),
-  ico = require('gulp-to-ico');
+  ico = require('gulp-to-ico'),
+  rollup = require('gulp-better-rollup'),
+  babel = require('rollup-plugin-babel'),
+  resolve = require('rollup-plugin-node-resolve'),
+  commonjs = require('rollup-plugin-commonjs'),
+  del = require('del'),
+  fileinclude = require('gulp-file-include');
+
 
 const paths = {
-  src: 'src',
-    srcHTML: 'src/**/*.html',
-    srcCSS: 'src/css/*.css',
-  srcSASS: 'src/sass/**/*.scss',
-    srcJS: 'src/js/**/*.js',
-    srcIMG: 'src/img/**/*',
-    srcSVG: 'src/img/**/*.svg',
-    srcMP4: 'src/img/**/*.mp4',
+    src: 'src/',
+    
+    srcDevHTML: 'src/dev/pages/**/*.html',
+    srcHTML: 'src/*.html',
+
+    srcCSS: 'src/assets/css/*.css',
+    srcSASS: 'src/dev/sass/**/*.scss',
+
+    srcJS: 'src/dev/js/**/*.js',
+
+    srcIMG: 'src/assets/img/**/*',
+    srcSVG: 'src/assets/img/**/*.svg',
+    srcMP4: 'src/assets/img/**/*.mp4',
     srcROBOTS: 'src/robots.txt',
-    srcMANIFEST: 'src/meta/manifest.webmanifest',
-    srcICON: 'src/meta/icon.png',
-    srcOG: 'src/meta/og.jpg',
-    srcFONTS: 'src/fonts/*',
+    srcMANIFEST: 'src/assets/meta/manifest.webmanifest',
+    srcICON: 'src/assets/meta/icon.png',
+    srcOG: 'src/assets/meta/og.jpg',
+    srcFONTS: 'src/assets/fonts/*',
 
     dist: 'dist',
     distCSS: 'dist/css',
@@ -40,9 +52,29 @@ const paths = {
 }
  
 
+
+
+
+
+// ---------------------------------------
+// ---------------------------------------
 // ---------------------------------------
 //  Develop
 // ---------------------------------------
+// ---------------------------------------
+// ---------------------------------------
+
+// Compile JS
+gulp.task('js', () => {
+  return gulp.src( paths.srcJS )
+      .pipe(rollup({ plugins: [babel(), resolve(), commonjs()] }, 'umd'))
+      .pipe(gulp.dest( 'src/assets/js' ));
+});
+
+gulp.task('cleanJs', function(cb) {
+    del(['src/assets/js/*', '!src/assets/js/main.js'], cb);
+});
+
 
 // Compile Sass
 sass.compiler = require('node-sass');
@@ -50,8 +82,22 @@ sass.compiler = require('node-sass');
 gulp.task('sass', function () {
     return gulp.src(paths.srcSASS)
         .pipe(sass.sync().on('error', sass.logError))
-        .pipe(gulp.dest('src/css/'))
+        .pipe(gulp.dest('src/assets/css/'))
 });
+
+
+// Complie html template
+gulp.task('html', function() {
+  return gulp.src([paths.srcDevHTML])
+    .pipe(fileinclude({
+      prefix: '@@',
+      basepath: '@file'
+    }))
+    .pipe(gulp.dest('./src'));
+});
+
+
+
 
 // Start webserver with livereload
 gulp.task('dev:webserver', function() {
@@ -59,14 +105,17 @@ gulp.task('dev:webserver', function() {
         .pipe(webserver({
             port: 8000,
             livereload: false,
-            open: true
+            open: false
         }));
 });
 
-// Watch sass file
+
 gulp.task('dev:watch', function() {
-    return gulp.watch(paths.srcSASS, gulp.series('sass'));
+    gulp.watch(paths.srcSASS, gulp.series('sass'));
+    gulp.watch(paths.srcJS, gulp.series('js', 'cleanJs'));
+    gulp.watch(paths.srcDevHTML, gulp.series('html'));
 });
+
 
 // Default task
 gulp.task('default', gulp.series('dev:webserver', 'dev:watch'));
@@ -75,8 +124,16 @@ gulp.task('default', gulp.series('dev:webserver', 'dev:watch'));
 
 
 
+
+
+
+
+// ---------------------------------------
+// ---------------------------------------
 // ---------------------------------------
 //  Distribute
+// ---------------------------------------
+// ---------------------------------------
 // ---------------------------------------
 
 //   Minify CSS
@@ -101,7 +158,7 @@ gulp.task('dist:html', () => {
 
 // Minify js file and service worker js file
 gulp.task('dist:js', function () {
-  return gulp.src(paths.srcJS)
+  return gulp.src(paths.distJS)
   .pipe(minify({
         ext: {
             min:'.js'
