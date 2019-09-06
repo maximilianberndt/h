@@ -73,7 +73,7 @@ gulp.task('js', () => {
 });
 
 gulp.task('cleanJs', function(cb) {
-    del(['src/assets/js/*', '!src/assets/js/main.js'], cb);
+  return del(['src/assets/js/*', '!src/assets/js/main.js'], cb);
 });
 
 
@@ -87,7 +87,7 @@ gulp.task('sass', function () {
 });
 
 
-// Complie html template
+// Compile html template
 gulp.task('html', function() {
   return gulp.src([paths.srcDevHTML])
     .pipe(fileinclude({
