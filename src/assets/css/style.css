@@ -424,7 +424,7 @@ img {
   --black: #1D1D1F;
   --white: #F9F9F9;
   /*-------------- Z Index --------------*/
-  --alwaysOnTop: 10;
+  --alwaysOnTop: 11;
   --top: 10;
   --middle: 5;
   --bottom: -1; }
