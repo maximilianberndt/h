@@ -1,5 +1,6 @@
 import domready from 'domready'
-import {User} from './user.js';
+import {S} from './util.js';
+import {M} from './util.js';
 
 
 // Service Worker initialisieren
@@ -11,14 +12,10 @@ import {User} from './user.js';
 
 class App {
 	constructor () {
-		this._user = new User('John');
-
-		console.log(this._user.name + "_New5")
+		console.log("Domready");
 	}
 }
 
 domready(function () {
-	console.log("Domready");
-	
 	window.A = new App();
 })

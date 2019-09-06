@@ -32,13 +32,6 @@
 	});
 	});
 
-	class User {
-	  constructor(name) {
-	    this.name = name;
-	  }
-
-	}
-
 	// if ('serviceWorker' in navigator) {
 	//   window.addEventListener('load', () => {
 	//     navigator.serviceWorker.register('../sw.js');
@@ -47,14 +40,13 @@
 
 	class App {
 	  constructor() {
-	    this._user = new User('John');
-	    console.log(this._user.name + "_New5");
+	    console.log("Domready");
 	  }
 
 	}
 
 	ready(function () {
-	  new App();
+	  window.A = new App();
 	});
 
 }));
