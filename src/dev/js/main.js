@@ -1,4 +1,5 @@
 import domready from 'domready'
+import {Sniffer} from './utils/Sniffer.js';
 import {S} from './utils/S.js';
 import {M} from './utils/M.js';
 import {E} from './utils/E.js';

@@ -5,6 +5,10 @@
 *************************************/
 
 
+// TODO?: Pass functions
+// element.addEventListener("click", function(){ myFunction(p1, p2); });
+
+
 export const E = {
 	add: function(element, type, fn) {
 		if(element.length) {
