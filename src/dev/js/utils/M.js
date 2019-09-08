@@ -13,6 +13,10 @@ export const M = {
     lerp: function(s, e, m) {
         return s * (1 - m) + e * m
     },
+
+    clamp: function(v, start, end) {
+        return Math.min(Math.max(v, start), end)
+    }
     
     dist: function(x1,x2,y1,y2) {
         let a = x1 - x2;
