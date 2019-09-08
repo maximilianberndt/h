@@ -16,7 +16,7 @@ export const M = {
 
     clamp: function(v, start, end) {
         return Math.min(Math.max(v, start), end)
-    }
+    },
     
     dist: function(x1,x2,y1,y2) {
         let a = x1 - x2;

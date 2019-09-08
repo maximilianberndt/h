@@ -34,14 +34,58 @@
 
 	/*************************************
 	*
-	*   Render Queue
-	*	running at 60fps
+	*	Helper Functions to Select things
 	*
-	*	// Add
+	*************************************/
+	const S = {
+	  id: function (name) {
+	    return document.getElementById(name);
+	  },
+	  class: function (name) {
+	    return Array.prototype.slice.call(document.getElementsByClassName(name));
+	  },
+	  tag: function (name) {
+	    return Array.prototype.slice.call(document.getElementsByTagName(name));
+	  }
+	};
+
+	/*************************************
+	*
+	*    Helper Functions for Event Listeners
+	*
+	*************************************/
+	const E = {
+	  add: function (element, type, fn) {
+	    if (element.length) {
+	      element.forEach(element => element.addEventListener(type, fn, false));
+	    } else {
+	      element.addEventListener(type, fn, false);
+	    }
+	  },
+	  remove: function (element, type, fn) {
+	    if (element.length) {
+	      element.forEach(element => element.removeEventListener(type, fn, false));
+	    } else {
+	      element.removeEventListener(type, fn, false);
+	    }
+	  }
+	};
+
+	/*************************************
+	*
+	*   Render Queue running at 60fps
+	*
+	*	// Add function
 	*	const functionId = R.add(function);
 	*
-	*	// Remove
+	*	// Remove function
 	*	R.remove(functionId);
+	*
+	*	// Start Rendering
+	*	R.start();
+	*
+	*	// Stop Rendering
+	*	R.stop();
 	*
 	*
 	*************************************/
@@ -125,9 +169,7 @@
 
 	class App {
 	  constructor() {
-	    console.log("Domready");
-	    R.start();
-	    this.variable = "jaksdkjashd";
+	    this.variable = "h.";
 	    R.add(this.test);
 	  }
 
@@ -138,7 +180,10 @@
 	}
 
 	ready(function () {
+	  console.log("Domready");
 	  window.A = new App();
+	  R.start();
+	  E.add(S.id("headline"), "mouseenter", A.test);
 	});
 
 }));

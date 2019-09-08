@@ -13,6 +13,6 @@ export const S = {
         return Array.prototype.slice.call(document.getElementsByClassName(name));
     },
     tag: function(name) {
-        return document.getElementsByTagName(name);
+        return Array.prototype.slice.call(document.getElementsByTagName(name));
     }
 }

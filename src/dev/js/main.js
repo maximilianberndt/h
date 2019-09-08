@@ -1,6 +1,7 @@
 import domready from 'domready'
 import {S} from './utils/S.js';
 import {M} from './utils/M.js';
+import {E} from './utils/E.js';
 import {R} from './utils/R.js';
 
 
@@ -13,11 +14,8 @@ import {R} from './utils/R.js';
 
 class App {
 	constructor () {
-		console.log("Domready");
 
-		R.start();
-
-		this.variable = "jaksdkjashd";
+		this.variable = "h.";
 
 		R.add(this.test);
 	}
@@ -29,5 +27,11 @@ class App {
 
 
 domready(function () {
+	console.log("Domready");
+
 	window.A = new App();
+
+	R.start();
+
+	E.add(S.id("headline"), "mouseenter", A.test);
 })
