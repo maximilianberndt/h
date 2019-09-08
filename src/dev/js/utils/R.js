@@ -3,11 +3,17 @@
 *   Render Queue
 *	running at 60fps
 *
-*	// Add
+*	// Add function
 *	const functionId = R.add(function);
 *
-*	// Remove
+*	// Remove function
 *	R.remove(functionId);
+*
+*	// Start Rendering
+*	R.start();
+*
+*	// Stop Rendering
+*	R.stop();
 *
 *
 *************************************/
