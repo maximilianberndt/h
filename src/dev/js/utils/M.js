@@ -1,6 +1,6 @@
 /*************************************
 *
-*    Helper Functions for math things
+*    Helper Functions for Math things
 *
 *************************************/
 

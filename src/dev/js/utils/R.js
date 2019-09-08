@@ -1,7 +1,6 @@
 /*************************************
 *
-*   Render Queue
-*	running at 60fps
+*   Render Queue running at 60fps
 *
 *	// Add function
 *	const functionId = R.add(function);

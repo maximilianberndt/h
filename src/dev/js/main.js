@@ -27,10 +27,6 @@ class App {
 	}
 }
 
-function test() {
-	console.log("test");
-}
-
 
 domready(function () {
 	window.A = new App();

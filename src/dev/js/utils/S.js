@@ -1,6 +1,6 @@
 /*************************************
 *
-*	Helper Functions to select things
+*	Helper Functions to Select things
 *
 *************************************/
 
