@@ -429,21 +429,6 @@ img {
   --middle: 5;
   --bottom: -1; }
 
-/*-------- Grid System -------- */
-.grid {
-  width: 90vw;
-  margin-left: 5vw; }
-
-/* 
-	Define the width of elements 
-
-	returns partial of 100%
-*/
-/* 
-	Define the distance from the left of the element + padding
-
-	returns partial of 100%
-*/
 body {
   font-family: 'Helvetica', sans-serif;
   background-color: var(--white);
