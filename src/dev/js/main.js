@@ -9,10 +9,9 @@ import {R} from './utils/R.js';
 
 // Service Worker initialisieren
 // if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker.register('../sw.js');
-//   });
+//   navigator.serviceWorker.register('../../sw.js');
 // }
+
 
 class App {
 	constructor () {
@@ -39,5 +38,5 @@ domready(function () {
 	window.A = new App();
 
 	// Start render queue
-	R.start();
+	// R.start();
 })

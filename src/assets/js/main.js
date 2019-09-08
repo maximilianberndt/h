@@ -63,47 +63,6 @@
 
 	/*************************************
 	*
-	*	Helper Functions to Select things
-	*
-	*************************************/
-	const S = {
-	  id: function (name) {
-	    return document.getElementById(name);
-	  },
-	  class: function (name) {
-	    return Array.prototype.slice.call(document.getElementsByClassName(name));
-	  },
-	  tag: function (name) {
-	    return Array.prototype.slice.call(document.getElementsByTagName(name));
-	  }
-	};
-
-	/*************************************
-	*
-	*    Helper Functions for Event Listeners
-	*
-	*************************************/
-	// TODO?: Pass functions
-	// element.addEventListener("click", function(){ myFunction(p1, p2); });
-	const E = {
-	  add: function (element, type, fn) {
-	    if (element.length) {
-	      element.forEach(element => element.addEventListener(type, fn, false));
-	    } else {
-	      element.addEventListener(type, fn, false);
-	    }
-	  },
-	  remove: function (element, type, fn) {
-	    if (element.length) {
-	      element.forEach(element => element.removeEventListener(type, fn, false));
-	    } else {
-	      element.removeEventListener(type, fn, false);
-	    }
-	  }
-	};
-
-	/*************************************
-	*
 	*   Render Queue running at 60fps
 	*
 	*	// Add function
@@ -193,9 +152,7 @@
 	};
 
 	// if ('serviceWorker' in navigator) {
-	//   window.addEventListener('load', () => {
-	//     navigator.serviceWorker.register('../sw.js');
-	//   });
+	//   navigator.serviceWorker.register('../../sw.js');
 	// }
 
 	class App {
@@ -206,10 +163,10 @@
 	      width: window.innerWidth,
 	      height: window.innerHeight
 	    };
-	    R.add(this.test);
+	    R.add(this.testFn);
 	  }
 
-	  test() {
+	  testFn() {
 	    console.log(A.global);
 	  }
 
@@ -217,9 +174,8 @@
 
 	ready(function () {
 	  console.log("Domready");
-	  window.A = new App();
-	  R.start();
-	  E.add(S.id("headline"), "mouseenter", A.test);
+	  window.A = new App(); // Start render queue
+	  // R.start();
 	});
 
 }));
