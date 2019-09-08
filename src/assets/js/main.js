@@ -34,6 +34,35 @@
 
 	/*************************************
 	*
+	*	Detect Browser and Platform (Desktop or Mobile)
+	*
+	*************************************/
+	const Sniffer = {
+	  detectBrowser: function () {
+	    let sBrowser,
+	        sUsrAg = navigator.userAgent;
+
+	    if (sUsrAg.indexOf("Chrome") > -1) {
+	      sBrowser = "isChrome";
+	    } else if (sUsrAg.indexOf("Safari") > -1) {
+	      sBrowser = "isSafari";
+	    } else if (sUsrAg.indexOf("Opera") > -1) {
+	      sBrowser = "isOpera";
+	    } else if (sUsrAg.indexOf("Firefox") > -1) {
+	      sBrowser = "isFirefox";
+	    } else if (sUsrAg.indexOf("MSIE") > -1) {
+	      sBrowser = "isMicrosoft";
+	    }
+
+	    return sBrowser;
+	  },
+	  detectPlatform: function () {
+	    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return "isMobile";else return "isDesktop";
+	  }
+	};
+
+	/*************************************
+	*
 	*	Helper Functions to Select things
 	*
 	*************************************/
@@ -54,6 +83,8 @@
 	*    Helper Functions for Event Listeners
 	*
 	*************************************/
+	// TODO?: Pass functions
+	// element.addEventListener("click", function(){ myFunction(p1, p2); });
 	const E = {
 	  add: function (element, type, fn) {
 	    if (element.length) {
@@ -169,12 +200,17 @@
 
 	class App {
 	  constructor() {
-	    this.variable = "h.";
+	    this.global = {
+	      browser: Sniffer.detectBrowser(),
+	      platfrom: Sniffer.detectPlatform(),
+	      width: window.innerWidth,
+	      height: window.innerHeight
+	    };
 	    R.add(this.test);
 	  }
 
 	  test() {
-	    console.log(A.variable);
+	    console.log(A.global);
 	  }
 
 	}

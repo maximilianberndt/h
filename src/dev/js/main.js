@@ -1,4 +1,5 @@
 import domready from 'domready'
+
 import {Sniffer} from './utils/Sniffer.js';
 import {S} from './utils/S.js';
 import {M} from './utils/M.js';
@@ -16,13 +17,18 @@ import {R} from './utils/R.js';
 class App {
 	constructor () {
 
-		this.variable = "h.";
+		this.global = {
+			browser: Sniffer.detectBrowser(),
+			platfrom: Sniffer.detectPlatform(),
+			width: window.innerWidth,
+			height: window.innerHeight
+		}
 
-		R.add(this.test);
+		R.add(this.testFn);
 	}
 
-	test() {
-		console.log(A.variable);
+	testFn() {
+		console.log(A.global);
 	}
 }
 
@@ -32,7 +38,6 @@ domready(function () {
 
 	window.A = new App();
 
+	// Start render queue
 	R.start();
-
-	E.add(S.id("headline"), "mouseenter", A.test);
 })

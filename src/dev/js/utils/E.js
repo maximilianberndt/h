@@ -2,11 +2,13 @@
 *
 *    Helper Functions for Event Listeners
 *
+*	// Add Event Listener
+*	E.add(S.id("headline"), "mouseenter", testFunction);
+*
+*	// Remove Event Listener
+*	E.add(S.id("headline"), "mouseenter", testFunction);
+*
 *************************************/
-
-
-// TODO?: Pass functions
-// element.addEventListener("click", function(){ myFunction(p1, p2); });
 
 
 export const E = {
