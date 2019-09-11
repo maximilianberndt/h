@@ -16,6 +16,10 @@ import {R} from './utils/R.js';
 class App {
 	constructor () {
 
+		// Bind functions
+		this._bind();
+
+		// Global Variables
 		this.global = {
 			browser: Sniffer.detectBrowser(),
 			platfrom: Sniffer.detectPlatform(),
@@ -23,7 +27,39 @@ class App {
 			height: window.innerHeight
 		}
 
+		// Add platfrom and browser version to body 
+		document.body.classList.add(this.global.browser, this.global.platfrom);
+
+		this._addEvents();
+
 		R.add(this.testFn);
+
+		// Start render queue
+		// R.start();
+	}
+
+
+
+	// PRIVATE
+
+	// Bing Functions
+	_bind() {
+		['onResize']
+    		.forEach((fn) => this[fn] = this[fn].bind(this))
+	}
+
+	// Add Functions
+	_addEvents() {
+		window.addEventListener('resize', this.onResize);
+	}
+
+
+
+	// PUBLIC
+
+	onResize() {
+		this.global.width = window.innerWidth;
+		this.global.height = window.innerHeight;
 	}
 
 	testFn() {
@@ -36,7 +72,4 @@ domready(function () {
 	console.log("Domready");
 
 	window.A = new App();
-
-	// Start render queue
-	// R.start();
 })
