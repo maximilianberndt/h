@@ -13,6 +13,15 @@ html, html a {
     text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
 
+//Style of selection
+::-moz-selection {
+	background: var(--black);
+} 
+
+::selection {
+	background: var(--black);
+} 
+
 /* Show this when no Javascript is activated */
 noscript {
 	position: fixed;
@@ -22,7 +31,7 @@ noscript {
 	height: 100vh;
 
 	background-color: var(--white);
-	z-index: var(--alwaysOnTop)
+	z-index: var(--alwaysOnTop);
 
 	display: flex;
 	justify-content: center;

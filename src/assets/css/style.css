@@ -440,6 +440,12 @@ html, html a {
   -webkit-font-smoothing: antialiased;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004); }
 
+::-moz-selection {
+  background: var(--black); }
+
+::selection {
+  background: var(--black); }
+
 /* Show this when no Javascript is activated */
 noscript {
   position: fixed;
@@ -448,6 +454,9 @@ noscript {
   width: 100vw;
   height: 100vh;
   background-color: var(--white);
+  z-index: var(--alwaysOnTop);
   display: flex;
   justify-content: center;
   align-items: center; }
+
+/* Debug view for container sizes */

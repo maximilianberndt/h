@@ -19,8 +19,6 @@ export const M = {
     },
     
     dist: function(x1,x2,y1,y2) {
-        let a = x1 - x2;
-        let b = y1 - y2;
-        return Math.hypot(a,b);
+        return Math.hypot(x1-x2, y1-y2);
     }
 }
