@@ -14,5 +14,11 @@ export const S = {
     },
     tag: function(name) {
         return Array.prototype.slice.call(document.getElementsByTagName(name));
+    },
+    html: function() {
+    	return document.documentElement
+    }, 
+    body: function() {
+    	return document.body
     }
 }
