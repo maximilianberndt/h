@@ -32,10 +32,12 @@ class App {
 
 		this._addEvents();
 
-		R.add(this.testFn);
+		// Example for function in render queue with scope
+		var _this = this;
+		R.add(function() { _this.scopeFn(_this) });
 
 		// Start render queue
-		// R.start();
+		R.start();
 	}
 
 
@@ -62,8 +64,12 @@ class App {
 		this.global.height = window.innerHeight;
 	}
 
-	testFn() {
-		console.log(A.global);
+	scopeFn() {
+
+		// Hack to get the scope
+		var _this = arguments[0];
+
+		console.log(_this.global);
 	}
 }
 

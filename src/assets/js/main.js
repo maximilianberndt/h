@@ -170,10 +170,16 @@
 	    };
 	    document.body.classList.add(this.global.browser, this.global.platfrom);
 
-	    this._addEvents();
+	    this._addEvents(); // Example for function in render queue with scope
 
-	    R.add(this.testFn); // Start render queue
-	    // R.start();
+
+	    var _this = this;
+
+	    R.add(function () {
+	      _this.scopeFn(_this);
+	    }); // Start render queue
+
+	    R.start();
 	  } // PRIVATE
 	  // Bing Functions
 
@@ -193,8 +199,10 @@
 	    this.global.height = window.innerHeight;
 	  }
 
-	  testFn() {
-	    console.log(A.global);
+	  scopeFn() {
+	    // Hack to get the scope
+	    var _this = arguments[0];
+	    console.log(_this.global);
 	  }
 
 	}
