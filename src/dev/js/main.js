@@ -28,7 +28,7 @@ class App {
 		}
 
 		// Add platfrom and browser version to body 
-		document.body.classList.add(this.global.browser, this.global.platfrom);
+		S.body.classList.add(this.global.browser, this.global.platfrom);
 
 		this._addEvents();
 
@@ -37,7 +37,7 @@ class App {
 		R.add(function() { _this.scopeFn(_this) });
 
 		// Start render queue
-		R.start();
+		// R.start();
 	}
 
 
@@ -46,13 +46,12 @@ class App {
 
 	// Bing Functions
 	_bind() {
-		['onResize']
-    		.forEach((fn) => this[fn] = this[fn].bind(this))
+		E.bind(this, ['onResize'])
 	}
 
 	// Add Functions
 	_addEvents() {
-		window.addEventListener('resize', this.onResize);
+		E.add(window, "resize", this.onResize);
 	}
 
 
@@ -65,7 +64,6 @@ class App {
 	}
 
 	scopeFn() {
-
 		// Hack to get the scope
 		var _this = arguments[0];
 

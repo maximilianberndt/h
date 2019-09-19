@@ -63,6 +63,60 @@
 
 	/*************************************
 	*
+	*	Helper Functions to Select things
+	*
+	*************************************/
+	const S = {
+	  id: function (name) {
+	    return document.getElementById(name);
+	  },
+	  class: function (name) {
+	    return Array.prototype.slice.call(document.getElementsByClassName(name));
+	  },
+	  tag: function (name) {
+	    return Array.prototype.slice.call(document.getElementsByTagName(name));
+	  },
+	  html: document.documentElement,
+	  body: document.body
+	};
+
+	/*************************************
+	*
+	*    Helper Functions for Event Listeners
+	*
+	*	// Bind functions
+	*	E.bind([arrayOfFunctions], this);
+	*
+	*	// Add Event Listener
+	*	E.add(S.id("headline"), "mouseenter", testFunction);
+	*
+	*	// Remove Event Listener
+	*	E.add(S.id("headline"), "mouseenter", testFunction);
+	*
+	*
+	*************************************/
+	const E = {
+	  bind: function (_this, fns) {
+	    fns.forEach(fn => _this[fn] = _this[fn].bind(_this));
+	  },
+	  add: function (el, type, fn) {
+	    if (el.length) {
+	      el.forEach(el => el.addEventListener(type, fn, false));
+	    } else {
+	      el.addEventListener(type, fn, false);
+	    }
+	  },
+	  remove: function (el, type, fn) {
+	    if (el.length) {
+	      el.forEach(el => el.removeEventListener(type, fn, false));
+	    } else {
+	      el.removeEventListener(type, fn, false);
+	    }
+	  }
+	};
+
+	/*************************************
+	*
 	*   Render Queue running at 60fps
 	*
 	*	// Add function
@@ -168,7 +222,7 @@
 	      height: window.innerHeight // Add platfrom and browser version to body 
 
 	    };
-	    document.body.classList.add(this.global.browser, this.global.platfrom);
+	    S.body.classList.add(this.global.browser, this.global.platfrom);
 
 	    this._addEvents(); // Example for function in render queue with scope
 
@@ -178,19 +232,18 @@
 	    R.add(function () {
 	      _this.scopeFn(_this);
 	    }); // Start render queue
-
-	    R.start();
+	    // R.start();
 	  } // PRIVATE
 	  // Bing Functions
 
 
 	  _bind() {
-	    ['onResize'].forEach(fn => this[fn] = this[fn].bind(this));
+	    E.bind(this, ['onResize']);
 	  } // Add Functions
 
 
 	  _addEvents() {
-	    window.addEventListener('resize', this.onResize);
+	    E.add(window, "resize", this.onResize);
 	  } // PUBLIC
 
 

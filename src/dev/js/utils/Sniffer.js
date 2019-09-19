@@ -10,22 +10,22 @@ export const Sniffer = {
 		let sBrowser, sUsrAg = navigator.userAgent;
 
 		if(sUsrAg.indexOf("Chrome") > -1) {
-		  sBrowser = "isChrome";
+		  sBrowser = "isChrome"
 		} else if (sUsrAg.indexOf("Safari") > -1) {
-		  sBrowser = "isSafari";
+		  sBrowser = "isSafari"
 		} else if (sUsrAg.indexOf("Opera") > -1) {
-		  sBrowser = "isOpera";
+		  sBrowser = "isOpera"
 		} else if (sUsrAg.indexOf("Firefox") > -1) {
-		  sBrowser = "isFirefox";
+		  sBrowser = "isFirefox"
 		} else if (sUsrAg.indexOf("MSIE") > -1) {
-		  sBrowser = "isMicrosoft";
+		  sBrowser = "isMicrosoft"
 		}
 
-		return sBrowser;
+		return sBrowser
 	},
 
 	detectPlatform: function() {
-		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) return "isMobile";
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) return "isMobile"
 		else return "isDesktop"
 	}
 }
