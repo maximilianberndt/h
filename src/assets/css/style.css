@@ -415,6 +415,9 @@ template {
 [hidden] {
   display: none; }
 
+/**
+ * Responsive images
+ */
 img {
   width: 100%;
   height: auto; }
@@ -437,6 +440,7 @@ body {
 
 /* Font smoothing hack */
 html, html a {
+  -webkit-font-smoothing: subpixel-antialiased;
   -webkit-font-smoothing: antialiased;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004); }
 
@@ -458,5 +462,3 @@ noscript {
   display: flex;
   justify-content: center;
   align-items: center; }
-
-/* Debug view for container sizes */

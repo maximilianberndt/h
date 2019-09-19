@@ -81,33 +81,31 @@ export const R = {
 	},
 
 	render: function() {
-		var _this = this;
 
 		// stop
-   		if(_this.vars.stop) return;
+   		if(this.vars.stop) return;
 
    		// request another frame
-    	_this.vars.raf = window.requestAnimationFrame(() => _this.render());
+    	this.vars.raf = window.requestAnimationFrame(() => this.render());
 
 		// calc elapsed time since last loop
-	    _this.vars.now = Date.now();
-		_this.vars.elapsed = _this.vars.now - _this.vars.then;
+	    this.vars.now = Date.now();
+		this.vars.elapsed = this.vars.now - this.vars.then;
 
 	    // if enough time has elapsed, draw the next frame
-	    if (_this.vars.elapsed > _this.vars.fpsInterval) {
+	    if (this.vars.elapsed < this.vars.fpsInterval) return;
 
-	        // Get ready for next frame by setting then=now, but...
-	        // Also, adjust for fpsInterval not being multiple of 16.67
-	        _this.vars.then = _this.vars.now - (_this.vars.elapsed % _this.vars.fpsInterval);
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        this.vars.then = this.vars.now - (this.vars.elapsed % this.vars.fpsInterval);
 
-	        // Execute all functions
-	    	_this.renderQueue.forEach( fn => fn.fn() );
- 
+        // Execute all functions
+    	this.renderQueue.forEach( fn => fn.fn() );
 
-	        // TESTING...Report #seconds since start and achieved fps.
-	        // var sinceStart = _this.vars.now - _this.vars.startTime;
-	        // var currentFps = Math.round(1000 / (sinceStart / ++_this.vars.frameCount) * 100) / 100;
-	        // console.log(currentFps);
-	    }
+
+        // TESTING - Report fps
+        // var sinceStart = this.vars.now - this.vars.startTime;
+        // var currentFps = Math.round(1000 / (sinceStart / ++ this.vars.frameCount) * 100) / 100;
+        // console.log(currentFps);
 	}
 }

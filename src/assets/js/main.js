@@ -57,7 +57,7 @@
 	    return sBrowser;
 	  },
 	  detectPlatform: function () {
-	    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return "isMobile";else return "isDesktop";
+	    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? "isMobile" : "isDesktop";
 	  }
 	};
 
@@ -181,27 +181,23 @@
 	    window.cancelAnimationFrame(this.vars.raf);
 	  },
 	  render: function () {
-	    var _this = this; // stop
+	    // stop
+	    if (this.vars.stop) return; // request another frame
 
+	    this.vars.raf = window.requestAnimationFrame(() => this.render()); // calc elapsed time since last loop
 
-	    if (_this.vars.stop) return; // request another frame
+	    this.vars.now = Date.now();
+	    this.vars.elapsed = this.vars.now - this.vars.then; // if enough time has elapsed, draw the next frame
 
-	    _this.vars.raf = window.requestAnimationFrame(() => _this.render()); // calc elapsed time since last loop
+	    if (this.vars.elapsed < this.vars.fpsInterval) return; // Get ready for next frame by setting then=now, but...
+	    // Also, adjust for fpsInterval not being multiple of 16.67
 
-	    _this.vars.now = Date.now();
-	    _this.vars.elapsed = _this.vars.now - _this.vars.then; // if enough time has elapsed, draw the next frame
+	    this.vars.then = this.vars.now - this.vars.elapsed % this.vars.fpsInterval; // Execute all functions
 
-	    if (_this.vars.elapsed > _this.vars.fpsInterval) {
-	      // Get ready for next frame by setting then=now, but...
-	      // Also, adjust for fpsInterval not being multiple of 16.67
-	      _this.vars.then = _this.vars.now - _this.vars.elapsed % _this.vars.fpsInterval; // Execute all functions
-
-	      _this.renderQueue.forEach(fn => fn.fn()); // TESTING...Report #seconds since start and achieved fps.
-	      // var sinceStart = _this.vars.now - _this.vars.startTime;
-	      // var currentFps = Math.round(1000 / (sinceStart / ++_this.vars.frameCount) * 100) / 100;
-	      // console.log(currentFps);
-
-	    }
+	    this.renderQueue.forEach(fn => fn.fn()); // TESTING - Report fps
+	    // var sinceStart = this.vars.now - this.vars.startTime;
+	    // var currentFps = Math.round(1000 / (sinceStart / ++ this.vars.frameCount) * 100) / 100;
+	    // console.log(currentFps);
 	  }
 	};
 
@@ -224,27 +220,28 @@
 	    };
 	    S.body.classList.add(this.global.browser, this.global.platfrom);
 
-	    this._addEvents(); // Example for function in render queue with scope
+	    this._addEvents(); // Add test function to render queue
 
 
-	    var _this = this;
-
-	    R.add(function () {
-	      _this.scopeFn(_this);
-	    }); // Start render queue
-	    // R.start();
-	  } // PRIVATE
+	    R.add(this.testFn);
+	  }
+	  /*
+	  *	PRIVATE
+	  */
 	  // Bing Functions
 
 
 	  _bind() {
-	    E.bind(this, ['onResize']);
+	    E.bind(this, ['onResize', 'testFn']);
 	  } // Add Functions
 
 
 	  _addEvents() {
 	    E.add(window, "resize", this.onResize);
-	  } // PUBLIC
+	  }
+	  /*
+	  *	PUBLIC
+	  */
 
 
 	  onResize() {
@@ -252,17 +249,16 @@
 	    this.global.height = window.innerHeight;
 	  }
 
-	  scopeFn() {
-	    // Hack to get the scope
-	    var _this = arguments[0];
-	    console.log(_this.global);
+	  testFn() {
+	    console.log(this.global);
 	  }
 
 	}
 
 	ready(function () {
-	  console.log("Domready");
-	  window.A = new App();
+	  window.A = new App(); // Start render queue
+
+	  R.start();
 	});
 
 }));

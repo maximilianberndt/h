@@ -32,21 +32,19 @@ class App {
 
 		this._addEvents();
 
-		// Example for function in render queue with scope
-		var _this = this;
-		R.add(function() { _this.scopeFn(_this) });
-
-		// Start render queue
-		// R.start();
+		// Add test function to render queue
+		R.add(this.testFn);
 	}
 
 
 
-	// PRIVATE
+	/*
+	*	PRIVATE
+	*/ 
 
 	// Bing Functions
 	_bind() {
-		E.bind(this, ['onResize'])
+		E.bind(this, ['onResize', 'testFn'])
 	}
 
 	// Add Functions
@@ -56,24 +54,25 @@ class App {
 
 
 
-	// PUBLIC
+	/*
+	*	PUBLIC
+	*/ 
 
 	onResize() {
 		this.global.width = window.innerWidth;
 		this.global.height = window.innerHeight;
 	}
 
-	scopeFn() {
-		// Hack to get the scope
-		var _this = arguments[0];
-
-		console.log(_this.global);
+	testFn() {
+		console.log(this.global);
 	}
 }
 
 
 domready(function () {
-	console.log("Domready");
 
 	window.A = new App();
+
+	// Start render queue
+	R.start();
 })
