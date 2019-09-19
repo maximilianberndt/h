@@ -2,29 +2,37 @@
 *
 *    Helper Functions for Event Listeners
 *
+*	// Bind functions
+*	E.bind([arrayOfFunctions], this);
+*
 *	// Add Event Listener
 *	E.add(S.id("headline"), "mouseenter", testFunction);
 *
 *	// Remove Event Listener
 *	E.add(S.id("headline"), "mouseenter", testFunction);
 *
+*
 *************************************/
 
 
 export const E = {
-	add: function(element, type, fn) {
-		if(element.length) {
-			element.forEach( element => element.addEventListener(type, fn, false) );
+	bind: function(_this, fns) {
+		fns.forEach((fn) => _this[fn] = _this[fn].bind(_this))
+	},
+
+	add: function(el, type, fn) {
+		if(el.length) {
+			el.forEach( el => el.addEventListener(type, fn, false) )
 		} else {
-			element.addEventListener(type, fn, false);
+			el.addEventListener(type, fn, false)
 		}
 	},
 
-	remove: function(element, type, fn) {
-		if(element.length) {
-			element.forEach( element => element.removeEventListener(type, fn, false) );
+	remove: function(el, type, fn) {
+		if(el.length) {
+			el.forEach( el => el.removeEventListener(type, fn, false) )
 		} else {
-			element.removeEventListener(type, fn, false);
+			el.removeEventListener(type, fn, false)
 		}
 	}
 }
