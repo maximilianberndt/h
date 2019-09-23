@@ -6,6 +6,9 @@ import {M} from './utils/M.js';
 import {E} from './utils/E.js';
 import {R} from './utils/R.js';
 
+import {Mouse} from './utils/Observer/mouse.js';
+import {Scroll} from './utils/Observer/scroll.js';
+
 
 // Service Worker initialisieren
 // if ('serviceWorker' in navigator) {

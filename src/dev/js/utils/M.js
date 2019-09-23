@@ -24,7 +24,7 @@ export const M = {
     },
 
     clamp: function(v, a, z) {
-        return Math.min(Math.max(v, a), z)
+        return Math.min(Math.max(v, a), z);
     },
     
     dist: function(a, b, z, y) {
