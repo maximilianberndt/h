@@ -6,8 +6,8 @@ import {M} from './utils/M.js';
 import {E} from './utils/E.js';
 import {R} from './utils/R.js';
 
-import {Mouse} from './utils/Observer/mouse.js';
-import {Scroll} from './utils/Observer/scroll.js';
+import {Mouse} from './utils/Observer/Mouse.js';
+import {Scroll} from './utils/Observer/Scroll.js';
 
 
 // Service Worker initialisieren
