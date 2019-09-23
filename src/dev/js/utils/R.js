@@ -16,15 +16,16 @@
 *
 *
 *************************************/
+import {M} from './M.js';
 
 
 export const R = {
 	// Variables for running animation frame at 60fps
-	vars: {
+	_data: {
 		raf: undefined,
 		stop: false,
 		frameCount: 0,
-		fps: null,
+		fps: 60,
 		fpsInterval: null,
 		startTime: null,
 		now: null,
@@ -37,7 +38,7 @@ export const R = {
 	add: function(fn) {
 
 		let newFn = {
-			id: Math.round(Math.random() * 3871245863215478),
+			id: Math.round(M.rand(1, 99999999)),
 			fn: fn
 		}
 		
@@ -65,47 +66,44 @@ export const R = {
 	},
 
 	start: function() {
-
-		let fps = 60;
-
-		this.vars.fpsInterval = 1000 / fps;
-	    this.vars.then = Date.now();
-	    this.vars.startTime = this.vars.then;
+		this._data.fpsInterval = 1000 / this._data.fps;
+	    this._data.then = Date.now();
+	    this._data.startTime = this._data.then;
+	    
 	    this.render();
-
 	},
 
 
 	stop: function() {
-		window.cancelAnimationFrame(this.vars.raf);
+		window.cancelAnimationFrame(this._data.raf);
 	},
 
 	render: function() {
 
 		// stop
-   		if(this.vars.stop) return;
+   		if(this._data.stop) return;
 
    		// request another frame
-    	this.vars.raf = window.requestAnimationFrame(() => this.render());
+    	this._data.raf = window.requestAnimationFrame(() => this.render());
 
 		// calc elapsed time since last loop
-	    this.vars.now = Date.now();
-		this.vars.elapsed = this.vars.now - this.vars.then;
+	    this._data.now = Date.now();
+		this._data.elapsed = this._data.now - this._data.then;
 
 	    // if enough time has elapsed, draw the next frame
-	    if (this.vars.elapsed < this.vars.fpsInterval) return;
+	    if (this._data.elapsed < this._data.fpsInterval) return;
 
         // Get ready for next frame by setting then=now, but...
         // Also, adjust for fpsInterval not being multiple of 16.67
-        this.vars.then = this.vars.now - (this.vars.elapsed % this.vars.fpsInterval);
+        this._data.then = this._data.now - (this._data.elapsed % this._data.fpsInterval);
 
         // Execute all functions
     	this.renderQueue.forEach( fn => fn.fn() );
 
 
         // TESTING - Report fps
-        // var sinceStart = this.vars.now - this.vars.startTime;
-        // var currentFps = Math.round(1000 / (sinceStart / ++ this.vars.frameCount) * 100) / 100;
+        // var sinceStart = this._data.now - this._data.startTime;
+        // var currentFps = Math.round(1000 / (sinceStart / ++ this._data.frameCount) * 100) / 100;
         // console.log(currentFps);
 	}
 }

@@ -56,50 +56,34 @@
 
   /*************************************
   *
-  *	Detect Browser and Platform (Desktop or Mobile)
+  *    Helper Functions for Math things
+  *
+  *   // Map value from one range to another
+  *   M.map(0, 10, 100, 300)
+  *
+  *   // Calc the distance between two points
+  *   M.dist(10, 20, 10, 30)
+  *
+  *   // Get a random value between two numbers
+  *   M.rand(10, 20)
   *
   *************************************/
-  var Sniffer = {
-    detectBrowser: function detectBrowser() {
-      var sBrowser,
-          sUsrAg = navigator.userAgent;
-
-      if (sUsrAg.indexOf("Chrome") > -1) {
-        sBrowser = "isChrome";
-      } else if (sUsrAg.indexOf("Safari") > -1) {
-        sBrowser = "isSafari";
-      } else if (sUsrAg.indexOf("Opera") > -1) {
-        sBrowser = "isOpera";
-      } else if (sUsrAg.indexOf("Firefox") > -1) {
-        sBrowser = "isFirefox";
-      } else if (sUsrAg.indexOf("MSIE") > -1) {
-        sBrowser = "isMicrosoft";
-      }
-
-      return sBrowser;
+  var M = {
+    map: function map(v, a, z, b, y) {
+      return b + (y - b) * ((v - a) / (z - a));
     },
-    detectPlatform: function detectPlatform() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? "isMobile" : "isDesktop";
+    lerp: function lerp(a, z, m) {
+      return a * (1 - m) + z * m;
+    },
+    clamp: function clamp(v, a, z) {
+      return Math.min(Math.max(v, a), z);
+    },
+    dist: function dist(a, b, z, y) {
+      return Math.hypot(a - b, z - y);
+    },
+    rand: function rand(a, z) {
+      return Math.random() * (z - a) + a;
     }
-  };
-
-  /*************************************
-  *
-  *	Helper Functions to Select things
-  *
-  *************************************/
-  var S = {
-    id: function id(name) {
-      return document.getElementById(name);
-    },
-    "class": function _class(name) {
-      return Array.prototype.slice.call(document.getElementsByClassName(name));
-    },
-    tag: function tag(name) {
-      return Array.prototype.slice.call(document.getElementsByTagName(name));
-    },
-    html: document.documentElement,
-    body: document.body
   };
 
   /*************************************
@@ -163,11 +147,11 @@
   *************************************/
   var R = {
     // Variables for running animation frame at 60fps
-    vars: {
+    _data: {
       raf: undefined,
       stop: false,
       frameCount: 0,
-      fps: null,
+      fps: 60,
       fpsInterval: null,
       startTime: null,
       now: null,
@@ -177,7 +161,7 @@
     renderQueue: [],
     add: function add(fn) {
       var newFn = {
-        id: Math.round(Math.random() * 3871245863215478),
+        id: Math.round(M.rand(1, 99999999)),
         fn: fn
       }; // Add to render loop
 
@@ -199,40 +183,107 @@
       }
     },
     start: function start() {
-      var fps = 60;
-      this.vars.fpsInterval = 1000 / fps;
-      this.vars.then = Date.now();
-      this.vars.startTime = this.vars.then;
+      this._data.fpsInterval = 1000 / this._data.fps;
+      this._data.then = Date.now();
+      this._data.startTime = this._data.then;
       this.render();
     },
     stop: function stop() {
-      window.cancelAnimationFrame(this.vars.raf);
+      window.cancelAnimationFrame(this._data.raf);
     },
     render: function render() {
       var _this2 = this;
 
       // stop
-      if (this.vars.stop) return; // request another frame
+      if (this._data.stop) return; // request another frame
 
-      this.vars.raf = window.requestAnimationFrame(function () {
+      this._data.raf = window.requestAnimationFrame(function () {
         return _this2.render();
       }); // calc elapsed time since last loop
 
-      this.vars.now = Date.now();
-      this.vars.elapsed = this.vars.now - this.vars.then; // if enough time has elapsed, draw the next frame
+      this._data.now = Date.now();
+      this._data.elapsed = this._data.now - this._data.then; // if enough time has elapsed, draw the next frame
 
-      if (this.vars.elapsed < this.vars.fpsInterval) return; // Get ready for next frame by setting then=now, but...
+      if (this._data.elapsed < this._data.fpsInterval) return; // Get ready for next frame by setting then=now, but...
       // Also, adjust for fpsInterval not being multiple of 16.67
 
-      this.vars.then = this.vars.now - this.vars.elapsed % this.vars.fpsInterval; // Execute all functions
+      this._data.then = this._data.now - this._data.elapsed % this._data.fpsInterval; // Execute all functions
 
       this.renderQueue.forEach(function (fn) {
         return fn.fn();
       }); // TESTING - Report fps
-      // var sinceStart = this.vars.now - this.vars.startTime;
-      // var currentFps = Math.round(1000 / (sinceStart / ++ this.vars.frameCount) * 100) / 100;
+      // var sinceStart = this._data.now - this._data.startTime;
+      // var currentFps = Math.round(1000 / (sinceStart / ++ this._data.frameCount) * 100) / 100;
       // console.log(currentFps);
     }
+  };
+
+  /*************************************
+  *
+  *	Detect Browser and Platform (Desktop or Mobile)
+  *
+  *************************************/
+  var Sniff = {
+    browser: function browser() {
+      var sBrowser,
+          sUsrAg = navigator.userAgent;
+
+      if (sUsrAg.indexOf("Chrome") > -1) {
+        sBrowser = "isChrome";
+      } else if (sUsrAg.indexOf("Safari") > -1) {
+        sBrowser = "isSafari";
+      } else if (sUsrAg.indexOf("Opera") > -1) {
+        sBrowser = "isOpera";
+      } else if (sUsrAg.indexOf("Firefox") > -1) {
+        sBrowser = "isFirefox";
+      } else if (sUsrAg.indexOf("MSIE") > -1) {
+        sBrowser = "isMicrosoft";
+      }
+
+      return sBrowser;
+    },
+    platfrom: function platfrom() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? "isMobile" : "isDesktop";
+    }
+  };
+
+  /*************************************
+  *
+  *	Global storage for variables
+  *
+  *************************************/
+  var G = {
+    browser: Sniff.browser(),
+    platform: Sniff.platfrom(),
+    width: window.innerWidth,
+    height: window.innerHeight,
+    init: function () {
+      var resizeFn = function resizeFn() {
+        G.width = window.innerWidth;
+        G.height = window.innerHeight;
+      };
+
+      E.add(window, "resize", resizeFn);
+    }()
+  };
+
+  /*************************************
+  *
+  *	Helper Functions to Select things
+  *
+  *************************************/
+  var S = {
+    id: function id(name) {
+      return document.getElementById(name);
+    },
+    "class": function _class(name) {
+      return Array.prototype.slice.call(document.getElementsByClassName(name));
+    },
+    tag: function tag(name) {
+      return Array.prototype.slice.call(document.getElementsByTagName(name));
+    },
+    html: document.documentElement,
+    body: document.body
   };
 
   // if ('serviceWorker' in navigator) {
@@ -246,54 +297,37 @@
       _classCallCheck(this, App);
 
       // Bind functions
-      this._bind(); // Global Variables
+      this._bind(); // Add platfrom and browser version to body 
 
 
-      this.global = {
-        browser: Sniffer.detectBrowser(),
-        platfrom: Sniffer.detectPlatform(),
-        width: window.innerWidth,
-        height: window.innerHeight
-      }; // Add platfrom and browser version to body 
-
-      S.body.classList.add(this.global.browser, this.global.platfrom);
+      S.body.classList.add(G.browser, G.platform);
 
       this._addEvents(); // Add test function to render queue
 
 
       R.add(this.testFn);
-    }
-    /*
-    *	PRIVATE
-    */
-    // Bing Functions
+    } // Bind Functions
 
 
     _createClass(App, [{
       key: "_bind",
       value: function _bind() {
-        E.bind(this, ['onResize', 'testFn']);
+        E.bind(this, ['testFn']);
       } // Add Functions
 
     }, {
       key: "_addEvents",
       value: function _addEvents() {
-        E.add(window, "resize", this.onResize);
+        E.add(window, "click", this.testFn);
       }
       /*
       *	PUBLIC
       */
 
     }, {
-      key: "onResize",
-      value: function onResize() {
-        this.global.width = window.innerWidth;
-        this.global.height = window.innerHeight;
-      }
-    }, {
       key: "testFn",
       value: function testFn() {
-        console.log(this.global);
+        console.log(G);
       }
     }]);
 
@@ -302,8 +336,7 @@
 
   ready(function () {
     window.A = new App(); // Start render queue
-
-    R.start();
+    // R.start();
   });
 
 }));

@@ -1,10 +1,10 @@
 import domready from 'domready'
 
-import {Sniffer} from './utils/Sniffer.js';
-import {S} from './utils/S.js';
 import {M} from './utils/M.js';
 import {E} from './utils/E.js';
 import {R} from './utils/R.js';
+import {G} from './utils/G.js';
+import {S} from './utils/S.js';
 
 import {Mouse} from './utils/Observer/Mouse.js';
 import {Scroll} from './utils/Observer/Scroll.js';
@@ -22,16 +22,8 @@ class App {
 		// Bind functions
 		this._bind();
 
-		// Global Variables
-		this.global = {
-			browser: Sniffer.detectBrowser(),
-			platfrom: Sniffer.detectPlatform(),
-			width: window.innerWidth,
-			height: window.innerHeight
-		}
-
 		// Add platfrom and browser version to body 
-		S.body.classList.add(this.global.browser, this.global.platfrom);
+		S.body.classList.add(G.browser, G.platform);
 
 		this._addEvents();
 
@@ -40,34 +32,22 @@ class App {
 	}
 
 
-
-	/*
-	*	PRIVATE
-	*/ 
-
-	// Bing Functions
+	// Bind Functions
 	_bind() {
-		E.bind(this, ['onResize', 'testFn'])
+		E.bind(this, ['testFn'])
 	}
 
 	// Add Functions
 	_addEvents() {
-		E.add(window, "resize", this.onResize);
+		E.add(window, "click", this.testFn);
 	}
-
 
 
 	/*
 	*	PUBLIC
-	*/ 
-
-	onResize() {
-		this.global.width = window.innerWidth;
-		this.global.height = window.innerHeight;
-	}
-
+	*/
 	testFn() {
-		console.log(this.global);
+		console.log(G);
 	}
 }
 
@@ -77,5 +57,5 @@ domready(function () {
 	window.A = new App();
 
 	// Start render queue
-	R.start();
+	// R.start();
 })

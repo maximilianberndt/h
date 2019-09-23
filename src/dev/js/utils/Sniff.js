@@ -5,8 +5,8 @@
 *************************************/
 
 
-export const Sniffer = {
-	detectBrowser: function() {
+export const Sniff = {
+	browser: function() {
 		let sBrowser, sUsrAg = navigator.userAgent;
 
 		if(sUsrAg.indexOf("Chrome") > -1) {
@@ -24,7 +24,7 @@ export const Sniffer = {
 		return sBrowser
 	},
 
-	detectPlatform: function() {
+	platfrom: function() {
 		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? "isMobile" : "isDesktop"
 	}
 }
