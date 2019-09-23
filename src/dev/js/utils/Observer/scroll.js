@@ -4,8 +4,9 @@
 *
 *	// Start observing the client scroll Position
 *	// Can be called many times and will only register one event listener
+*	// Scroll.observe()
 *	//
-* 	// OPTIONAL: track speed, set custom ease
+* 	// OPTIONAL: track speed and set custom ease (higher ease, more damping)
 *	Scroll.observe(true, 0.4)
 *
 *	// Stop observing the scroll Position
@@ -26,6 +27,7 @@ export const Scroll = {
 	pos: 0, 
 	last: 0,
 	speed: 0,
+
 	_data: {
 		speedFn: null,
 		ease: 0.2,
@@ -36,11 +38,15 @@ export const Scroll = {
 		this._data.calls++;
 
 		if(this._data.calls == 1) {
+
+			// Add csutom ease or 0.2 ease
 			this._data.ease = ease ? ease : 0.2;
 
+			// Bind functions and register event listeners
 			E.bind(this, ['setScroll', 'calcSpeed']);
 			E.add(window, "scroll", this.setScroll);
 
+			// OPTIONAL: Calculate Scroll speed
 			if(speed) this._data.speedFn = R.add(this.calcSpeed);
 		}
 	},
@@ -50,8 +56,11 @@ export const Scroll = {
 		this._data.calls = M.clamp(this.calls, 0, Infinity);
 		
 		if(this._data.calls == 0) {
+
+			// Reomve event listener
 			E.remove(window, "scroll", this.setScroll);
 
+			// Reomve calcSpeed from rendern queq
 			if(this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);
 
 			// Reset ease
