@@ -104,6 +104,38 @@
 
   /*************************************
   *
+  *    Helper Functions for Math things
+  *
+  *   // Map value from one range to another
+  *   M.map(0, 10, 100, 300)
+  *
+  *   // Calc the distance between two points
+  *   M.dist(10, 20, 10, 30)
+  *
+  *   // Get a random value between two numbers
+  *   M.rand(10, 20)
+  *
+  *************************************/
+  var M = {
+    map: function map(v, a, z, b, y) {
+      return b + (y - b) * ((v - a) / (z - a));
+    },
+    lerp: function lerp(a, z, m) {
+      return a * (1 - m) + z * m;
+    },
+    clamp: function clamp(v, a, z) {
+      return Math.min(Math.max(v, a), z);
+    },
+    dist: function dist(a, b, z, y) {
+      return Math.hypot(a - b, z - y);
+    },
+    rand: function rand(a, z) {
+      return Math.random() * (z - a) + a;
+    }
+  };
+
+  /*************************************
+  *
   *    Helper Functions for Event Listeners
   *
   *	// Bind functions
@@ -178,9 +210,9 @@
     add: function add(fn) {
       var newFn = {
         id: Math.round(Math.random() * 3871245863215478),
-        fn: fn // Add to render loop
+        fn: fn
+      }; // Add to render loop
 
-      };
       this.renderQueue.push(newFn); // console.log("Function added successfully: " + newFn.id);
       // Return the id so function can be removed later
 
@@ -235,6 +267,115 @@
     }
   };
 
+  /*************************************
+  *
+  *    Observe Mouse Position
+  *
+  *	// Start observing the client mouse Position
+  *	// Can be called many times and will only 
+  *	// register one event listener
+  *	Mouse.observe()
+  *
+  *	// Stop observing the mouse Position
+  * 	// If observe has been called multiple times, scroll observing will not stop
+  *	Mouse.stop()
+  *
+  *	// Returns current mouse Position
+  *	// { x: 23, y: 234 }
+  *	Mouse.pos
+  *
+  *************************************/
+  var Mouse = {
+    pos: {
+      x: 0,
+      y: 0
+    },
+    // last: {
+    // 	x: 0,
+    // 	y: 0
+    // }, 
+    speed: 0,
+    calls: 0,
+    observe: function observe() {
+      this.calls++;
+
+      if (this.calls == 1) {
+        E.bind(this, ['setPos']);
+        E.add(document, "mousemove", this.setPos);
+      }
+    },
+    stop: function stop() {
+      this.calls--;
+      this.calls = M.clamp(this.calls, 0, Infinity);
+      if (this.calls == 0) E.remove(document, "mousemove", this.setPos);
+    },
+    setPos: function setPos() {
+      // this.last = this.pos;
+      this.pos = {
+        x: event.clientX,
+        y: event.clientY
+      }; // console.log(this.last.x + " " + this.pos.x);
+    }
+  };
+
+  /*************************************
+  *
+  *    Observe Scroll Position
+  *
+  *	// Start observing the client scroll Position
+  *	// Can be called many times and will only register one event listener
+  *	//
+  * 	// OPTIONAL: track speed, set custom ease
+  *	Scroll.observe(true, 0.4)
+  *
+  *	// Stop observing the scroll Position
+  * 	// If observe has been called multiple times, scroll observing will not stop
+  *	Scroll.stop()
+  *
+  *	// Returns current scroll Position
+  *	Scroll.pos
+  *
+  *************************************/
+  var Scroll = {
+    pos: 0,
+    last: 0,
+    speed: 0,
+    _data: {
+      speedFn: null,
+      ease: 0.2,
+      calls: 0
+    },
+    observe: function observe(speed, ease) {
+      this._data.calls++;
+
+      if (this._data.calls == 1) {
+        this._data.ease = ease ? ease : 0.2;
+        E.bind(this, ['setScroll', 'calcSpeed']);
+        E.add(window, "scroll", this.setScroll);
+        if (speed) this._data.speedFn = R.add(this.calcSpeed);
+      }
+    },
+    stop: function stop() {
+      this._data.calls--;
+      this._data.calls = M.clamp(this.calls, 0, Infinity);
+
+      if (this._data.calls == 0) {
+        E.remove(window, "scroll", this.setScroll);
+        if (this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn); // Reset ease
+
+        this._data.ease = 0.2;
+      }
+    },
+    setScroll: function setScroll() {
+      this.pos = window.scrollY;
+    },
+    calcSpeed: function calcSpeed() {
+      this.last = M.lerp(this.last, this.pos, this._data.ease);
+      if (this.last < .1) this.last = 0;
+      this.speed = this.pos - this.last;
+    }
+  };
+
   // if ('serviceWorker' in navigator) {
   //   navigator.serviceWorker.register('../../sw.js');
   // }
@@ -253,9 +394,9 @@
         browser: Sniffer.detectBrowser(),
         platfrom: Sniffer.detectPlatform(),
         width: window.innerWidth,
-        height: window.innerHeight // Add platfrom and browser version to body 
+        height: window.innerHeight
+      }; // Add platfrom and browser version to body 
 
-      };
       S.body.classList.add(this.global.browser, this.global.platfrom);
 
       this._addEvents(); // Add test function to render queue
@@ -292,8 +433,7 @@
       }
     }, {
       key: "testFn",
-      value: function testFn() {
-        console.log(this.global);
+      value: function testFn() {// console.log(this.global);
       }
     }]);
 
@@ -304,6 +444,8 @@
     window.A = new App(); // Start render queue
 
     R.start();
+    Mouse.observe();
+    Scroll.observe(true, 0.4);
   });
 
 }));

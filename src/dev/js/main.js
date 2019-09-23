@@ -67,7 +67,7 @@ class App {
 	}
 
 	testFn() {
-		console.log(this.global);
+		// console.log(this.global);
 	}
 }
 
@@ -78,4 +78,7 @@ domready(function () {
 
 	// Start render queue
 	R.start();
+
+	Mouse.observe();
+	Scroll.observe(true, 0.4);
 })

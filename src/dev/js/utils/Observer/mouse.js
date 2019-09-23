@@ -26,6 +26,11 @@ export const Mouse = {
 		x: 0,
 		y: 0
 	}, 
+	// last: {
+	// 	x: 0,
+	// 	y: 0
+	// }, 
+	speed: 0,
 	calls: 0,
 
 	observe: function() {
@@ -45,9 +50,13 @@ export const Mouse = {
 	},
 
 	setPos: function() {
+		// this.last = this.pos;
+
 		this.pos = {
 			x: event.clientX,
 			y: event.clientY
 		}
+
+		// console.log(this.last.x + " " + this.pos.x);
 	}
 }
