@@ -1,10 +1,13 @@
 /*************************************
 *
-*	Global storage for variables
+*    Global storage for variables
+*
+*    Resize event listener is automatically created
 *
 *************************************/
 
 import {Sniff} from './Sniff.js';
+import {debounce} from './debounce.js';
 import {E} from './E.js';
 
 export const G = {
@@ -19,6 +22,6 @@ export const G = {
 			G.height = window.innerHeight;
 		}
 
-    	E.add(window, "resize", resizeFn);
+    	E.add(window, "resize", debounce(resizeFn, 250));
 	})()
 }

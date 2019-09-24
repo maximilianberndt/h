@@ -249,7 +249,28 @@
 
   /*************************************
   *
-  *	Global storage for variables
+  *	Debounce function
+  *
+  *	Execute function after given delay
+  *
+  *************************************/
+  var debounce = function debounce(fn, delay) {
+    var dt;
+    return function () {
+      var ctx = this;
+      var args = arguments;
+      clearTimeout(dt);
+      dt = setTimeout(function () {
+        return fn.apply(ctx, args);
+      }, delay);
+    };
+  };
+
+  /*************************************
+  *
+  *    Global storage for variables
+  *
+  *    Resize event listener is automatically created
   *
   *************************************/
   var G = {
@@ -263,7 +284,7 @@
         G.height = window.innerHeight;
       };
 
-      E.add(window, "resize", resizeFn);
+      E.add(window, "resize", debounce(resizeFn, 250));
     }()
   };
 
