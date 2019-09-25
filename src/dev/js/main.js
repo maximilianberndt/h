@@ -1,10 +1,10 @@
 import domready from 'domready'
 
-import {M} from './utils/M.js';
-import {E} from './utils/E.js';
-import {R} from './utils/R.js';
-import {G} from './utils/G.js';
-import {S} from './utils/S.js';
+import {M} from './utils/Core/M.js';
+import {E} from './utils/Core/E.js';
+import {R} from './utils/Core/R.js';
+import {G} from './utils/Core/G.js';
+import {S} from './utils/Core/S.js';
 
 import {Mouse} from './utils/Observer/Mouse.js';
 import {Scroll} from './utils/Observer/Scroll.js';

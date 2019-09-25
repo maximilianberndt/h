@@ -7,8 +7,8 @@
 *************************************/
 
 import {Sniff} from './Sniff.js';
-import {debounce} from './debounce.js';
-import {E} from './E.js';
+import {debounce} from '../Functions/debounce.js';
+import {E} from '../Core/E.js';
 
 export const G = {
     browser: Sniff.browser(),
@@ -16,12 +16,12 @@ export const G = {
     width: window.innerWidth,
     height: window.innerHeight,
 
-	init:(() => {
+	i:(() => {
     	var resizeFn = function() {
 			G.width = window.innerWidth;
 			G.height = window.innerHeight;
 		}
 
-    	E.add(window, "resize", debounce(resizeFn, 250));
+    	E.add(window, "resize", debounce(resizeFn, 250))
 	})()
 }

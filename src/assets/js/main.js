@@ -278,7 +278,7 @@
     platform: Sniff.platfrom(),
     width: window.innerWidth,
     height: window.innerHeight,
-    init: function () {
+    i: function () {
       var resizeFn = function resizeFn() {
         G.width = window.innerWidth;
         G.height = window.innerHeight;
@@ -294,14 +294,15 @@
   *
   *************************************/
   var S = {
-    id: function id(name) {
-      return document.getElementById(name);
-    },
-    "class": function _class(name) {
-      return Array.prototype.slice.call(document.getElementsByClassName(name));
-    },
-    tag: function tag(name) {
-      return Array.prototype.slice.call(document.getElementsByTagName(name));
+    get: function get(el, parent) {
+      var p = parent || document;
+      var type = checkType(el.charAt(0));
+      if (type !== 'tag') el = el.substr(1);
+      return type === "id" ? p.getElementById(el) : type === "class" ? Array.prototype.slice.call(p.getElementsByClassName(el)) : Array.prototype.slice.call(p.getElementsByTagName(el));
+
+      function checkType(el) {
+        return el === '#' ? 'id' : el === '.' ? 'class' : 'tag';
+      }
     },
     html: document.documentElement,
     body: document.body

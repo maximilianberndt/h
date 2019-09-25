@@ -18,9 +18,9 @@
 *
 *************************************/
 
-import {E} from '../E.js';
-import {M} from '../M.js';
-import {R} from '../R.js';
+import {E} from '../Core/E.js';
+import {M} from '../Core/M.js';
+import {R} from '../Core/R.js';
 
 
 export const Scroll = {
