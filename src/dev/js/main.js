@@ -1,10 +1,12 @@
 import domready from 'domready'
 
-import {M} from './utils/Core/M.js';
-import {E} from './utils/Core/E.js';
-import {R} from './utils/Core/R.js';
-import {G} from './utils/Core/G.js';
-import {S} from './utils/Core/S.js';
+import {M} from './utils/M.js';
+import {R} from './utils/R.js';
+import {G} from './utils/G.js';
+import {Dom} from './utils/Dom.js';
+
+import {E} from './utils/Element/E.js';
+import {S} from './utils/Element/S.js';
 
 import {Mouse} from './utils/Observer/Mouse.js';
 import {Scroll} from './utils/Observer/Scroll.js';
@@ -22,10 +24,9 @@ class App {
 		// Bind functions
 		this._bind();
 
-		// Add platfrom and browser version to body 
-		S.body.classList.add(G.browser, G.platform);
-
 		this._addEvents();
+
+		Dom.body.classList.add(G.browser, G.platfrom);
 
 		// Add test function to render queue
 		R.add(this.testFn);
@@ -47,7 +48,7 @@ class App {
 	*	PUBLIC
 	*/
 	testFn() {
-		console.log(G);
+		// console.log(this);
 	}
 }
 
@@ -56,6 +57,8 @@ domready(function () {
 
 	window.A = new App();
 
+	console.log("Testing");
+
 	// Start render queue
-	// R.start();
+	R.start();
 })

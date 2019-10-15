@@ -88,47 +88,6 @@
 
   /*************************************
   *
-  *    Helper Functions for Event Listeners
-  *
-  *	// Bind functions
-  *	E.bind([arrayOfFunctions], this);
-  *
-  *	// Add Event Listener
-  *	E.add(S.id("headline"), "mouseenter", testFunction);
-  *
-  *	// Remove Event Listener
-  *	E.add(S.id("headline"), "mouseenter", testFunction);
-  *
-  *
-  *************************************/
-  var E = {
-    bind: function bind(_this, fns) {
-      fns.forEach(function (fn) {
-        return _this[fn] = _this[fn].bind(_this);
-      });
-    },
-    add: function add(el, type, fn) {
-      if (el.length) {
-        el.forEach(function (el) {
-          return el.addEventListener(type, fn, false);
-        });
-      } else {
-        el.addEventListener(type, fn, false);
-      }
-    },
-    remove: function remove(el, type, fn) {
-      if (el.length) {
-        el.forEach(function (el) {
-          return el.removeEventListener(type, fn, false);
-        });
-      } else {
-        el.removeEventListener(type, fn, false);
-      }
-    }
-  };
-
-  /*************************************
-  *
   *   Render Queue running at 60fps
   *
   *	// Add function
@@ -165,8 +124,7 @@
         fn: fn
       }; // Add to render loop
 
-      this.renderQueue.push(newFn); // console.log("Function added successfully: " + newFn.id);
-      // Return the id so function can be removed later
+      this.renderQueue.push(newFn); // Return the id so function can be removed later
 
       return newFn.id;
     },
@@ -175,7 +133,6 @@
 
       for (var i = 0; i < _this.renderQueue.length; i++) {
         if (_this.renderQueue[i].id === id) {
-          // console.log("Function removed successfully: " + id);
           _this.renderQueue.splice(i, 1);
 
           return undefined;
@@ -268,6 +225,61 @@
 
   /*************************************
   *
+  *    Helper Functions for Elements
+  *
+  *	// Bind functions
+  *	E.bind([arrayOfFunctions], this);
+  *
+  *	// Add Event Listener
+  *	E.add(S.id("headline"), "mouseenter", testFunction);
+  *
+  *	// Remove Event Listener
+  *	E.add(S.id("headline"), "mouseenter", testFunction);
+  *
+  *	
+  *	// Select Element by id
+  *	E.get('#headline')
+  *
+  *
+  *************************************/
+  var E = {
+    bind: function bind(_this, fns) {
+      fns.forEach(function (fn) {
+        return _this[fn] = _this[fn].bind(_this);
+      });
+    },
+    add: function add(el, type, fn) {
+      if (el.length) {
+        el.forEach(function (el) {
+          return el.addEventListener(type, fn, false);
+        });
+      } else {
+        el.addEventListener(type, fn, false);
+      }
+    },
+    remove: function remove(el, type, fn) {
+      if (el.length) {
+        el.forEach(function (el) {
+          return el.removeEventListener(type, fn, false);
+        });
+      } else {
+        el.removeEventListener(type, fn, false);
+      }
+    },
+    get: function get(el, parent) {
+      var p = parent || document;
+      var type = checkType(el.charAt(0));
+      if (type !== 'tag') el = el.substr(1);
+      return type === "id" ? p.getElementById(el) : type === "class" ? Array.prototype.slice.call(p.getElementsByClassName(el)) : Array.prototype.slice.call(p.getElementsByTagName(el));
+
+      function checkType(el) {
+        return el === '#' ? 'id' : el === '.' ? 'class' : 'tag';
+      }
+    }
+  };
+
+  /*************************************
+  *
   *    Global storage for variables
   *
   *    Resize event listener is automatically created
@@ -290,22 +302,12 @@
 
   /*************************************
   *
-  *	Helper Functions to Select things
+  *	Dom Elements
   *
   *************************************/
-  var S = {
-    get: function get(el, parent) {
-      var p = parent || document;
-      var type = checkType(el.charAt(0));
-      if (type !== 'tag') el = el.substr(1);
-      return type === "id" ? p.getElementById(el) : type === "class" ? Array.prototype.slice.call(p.getElementsByClassName(el)) : Array.prototype.slice.call(p.getElementsByTagName(el));
-
-      function checkType(el) {
-        return el === '#' ? 'id' : el === '.' ? 'class' : 'tag';
-      }
-    },
-    html: document.documentElement,
-    body: document.body
+  var Dom = {
+    body: document.body,
+    html: document.documentElement
   };
 
   // if ('serviceWorker' in navigator) {
@@ -319,13 +321,11 @@
       _classCallCheck(this, App);
 
       // Bind functions
-      this._bind(); // Add platfrom and browser version to body 
+      this._bind();
 
+      this._addEvents();
 
-      S.body.classList.add(G.browser, G.platform);
-
-      this._addEvents(); // Add test function to render queue
-
+      Dom.body.classList.add(G.browser, G.platfrom); // Add test function to render queue
 
       R.add(this.testFn);
     } // Bind Functions
@@ -348,8 +348,7 @@
 
     }, {
       key: "testFn",
-      value: function testFn() {
-        console.log(G);
+      value: function testFn() {// console.log(this);
       }
     }]);
 
@@ -357,8 +356,10 @@
   }();
 
   ready(function () {
-    window.A = new App(); // Start render queue
-    // R.start();
+    window.A = new App();
+    console.log("Testing"); // Start render queue
+
+    R.start();
   });
 
 }));

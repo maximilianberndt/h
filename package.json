@@ -36,6 +36,8 @@
     "@babel/preset-env": "^7.6.0",
     "domready": "^1.0.8",
     "gulp-htmlmin": "^5.0.1",
+    "gulp-remove-logging": "^1.2.0",
+    "gulp-strip-debug": "^3.0.0",
     "gulp-uglifycss": "^1.1.0"
   }
 }

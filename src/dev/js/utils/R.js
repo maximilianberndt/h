@@ -45,8 +45,6 @@ export const R = {
 		// Add to render loop
 		this.renderQueue.push(newFn);
 
-		// console.log("Function added successfully: " + newFn.id);
-
 		// Return the id so function can be removed later
 		return(newFn.id);
 	},
@@ -56,7 +54,6 @@ export const R = {
 
 		for(let i = 0; i < _this.renderQueue.length; i++) {
 			if(_this.renderQueue[i].id === id) {
-				// console.log("Function removed successfully: " + id);
 
 				_this.renderQueue.splice(i, 1);
 

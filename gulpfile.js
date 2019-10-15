@@ -163,7 +163,7 @@ gulp.task('dist:html', () => {
 // Minify js file and service worker js file
 gulp.task('dist:js', function () {
   return gulp.src('src/assets/js/*.js')
-  .pipe(minify({
+    .pipe(minify({
         ext: {
             min:'.js'
         },

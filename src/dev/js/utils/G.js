@@ -7,8 +7,8 @@
 *************************************/
 
 import {Sniff} from './Sniff.js';
-import {debounce} from '../Functions/debounce.js';
-import {E} from '../Core/E.js';
+import {debounce} from './Functions/debounce.js';
+import {E} from './Element/E.js';
 
 export const G = {
     browser: Sniff.browser(),

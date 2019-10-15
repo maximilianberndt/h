@@ -4,10 +4,10 @@
 *
 *	// Start observing the client mouse Position
 *	// Can be called many times and will only register one event listener
-*	// Mouse.observe()
+*	// Mouse.start()
 *	//
 * 	// OPTIONAL: track speed and set custom ease (higher ease, more damping)
-*	Mouse.observe(true, 0.4)
+*	Mouse.start(true, 0.4)
 *
 *	// Stop observing the mouse Position
 * 	// If observe has been called multiple times, scroll observing will not stop
@@ -19,9 +19,9 @@
 *
 *************************************/
 
-import {E} from '../Core/E.js';
-import {M} from '../Core/M.js';
-import {R} from '../Core/R.js';
+import {E} from '../Element/E.js';
+import {M} from '../M.js';
+import {R} from '../R.js';
 
 
 export const Mouse = {
@@ -38,37 +38,41 @@ export const Mouse = {
 	_data: {
 		speedFn: null,
 		ease: 0.2,
-		calls: 0,
+		isActive: false,
 	},
 
-	observe: function(speed, ease) {
-		this._data.calls++;
+	start: function(speed, ease) {
 
-		if(this._data.calls == 1) {
-			this._data.ease = ease ? ease : 0.2;
+		if(this._data.isActive) return
 
-			E.bind(this, ['setPos', 'calcSpeed']);
-			E.add(document, "mousemove", this.setPos);
+		this._data.ease = ease || 0.2;
 
-			if(speed) this._data.speedFn = R.add(this.calcSpeed);
-		}
+		E.bind(this, ['_setPos', '_calcSpeed']);
+		E.add(document, "mousemove", this._setPos);
+
+		if(speed) this._data.speedFn = R.add(this._calcSpeed);
 	},
 
 	stop: function() {
-		this._data.calls--;
-		this._data.calls = M.clamp(this._data.calls, 0, Infinity);
+		if(!this._data.isActive) return
 
-		if(this._data.calls == 0) E.remove(document, "mousemove", this.setPos);
+		E.remove(document, "mousemove", this._setPos);
+
+		// Reomve _calcSpeed from rendern queue
+		if(this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);
+
+		// Reset ease
+		this._data.ease = 0.2;
 	},
 
-	setPos: function() {
+	_setPos: function() {
 		this.pos = {
 			x: event.clientX,
 			y: event.clientY
 		}
 	},
 
-	calcSpeed: function() {
+	_calcSpeed: function() {
 		this.last.x = M.lerp(this.last.x, this.pos.x, this._data.ease);
 		this.last.y = M.lerp(this.last.y, this.pos.y, this._data.ease);
 

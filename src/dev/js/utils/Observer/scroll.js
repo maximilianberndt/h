@@ -4,10 +4,10 @@
 *
 *	// Start observing the client scroll Position
 *	// Can be called many times and will only register one event listener
-*	// Scroll.observe()
+*	// Scroll.start()
 *	//
 * 	// OPTIONAL: track speed and set custom ease (higher ease, more damping)
-*	Scroll.observe(true, 0.4)
+*	Scroll.start(true, 0.4)
 *
 *	// Stop observing the scroll Position
 * 	// If observe has been called multiple times, scroll observing will not stop
@@ -18,9 +18,9 @@
 *
 *************************************/
 
-import {E} from '../Core/E.js';
-import {M} from '../Core/M.js';
-import {R} from '../Core/R.js';
+import {E} from '../Element/E.js';
+import {M} from '../M.js';
+import {R} from '../R.js';
 
 
 export const Scroll = {
@@ -31,48 +31,43 @@ export const Scroll = {
 	_data: {
 		speedFn: null,
 		ease: 0.2,
-		calls: 0,
+		isActive: false,
 	},
 	
-	observe: function(speed, ease) {
-		this._data.calls++;
+	start: function(speed, ease) {
+		
+		if(this._data.isActive) return
 
-		if(this._data.calls == 1) {
+		// Add csutom ease or 0.2 ease
+		this._data.ease = ease || 0.2;
 
-			// Add csutom ease or 0.2 ease
-			this._data.ease = ease ? ease : 0.2;
+		// Bind functions and register event listeners
+		E.bind(this, ['_setScroll', '_calcSpeed']);
+		E.add(window, "scroll", this._setScroll);
 
-			// Bind functions and register event listeners
-			E.bind(this, ['setScroll', 'calcSpeed']);
-			E.add(window, "scroll", this.setScroll);
-
-			// OPTIONAL: Calculate Scroll speed
-			if(speed) this._data.speedFn = R.add(this.calcSpeed);
-		}
+		// OPTIONAL: Calculate Scroll speed
+		if(speed) this._data.speedFn = R.add(this._calcSpeed);
 	},
 
 	stop: function() {
-		this._data.calls--;
-		this._data.calls = M.clamp(this.calls, 0, Infinity);
 		
-		if(this._data.calls == 0) {
+		if(!this._data.isActive) return
 
-			// Reomve event listener
-			E.remove(window, "scroll", this.setScroll);
+		// Reomve event listener
+		E.remove(window, "scroll", this._setScroll);
 
-			// Reomve calcSpeed from rendern queq
-			if(this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);
+		// Reomve _calcSpeed from rendern queue
+		if(this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);
 
-			// Reset ease
-			this._data.ease = 0.2;
-		}
+		// Reset ease
+		this._data.ease = 0.2;
 	},
 
-	setScroll: function() {
+	_setScroll: function() {
 		this.pos = window.scrollY;
 	},
 
-	calcSpeed: function() {
+	_calcSpeed: function() {
 		this.last = M.lerp(this.last, this.pos, this._data.ease)
 	    if (this.last < .1) this.last = 0;
 
