@@ -7,5 +7,17 @@
 
 export const Dom = {
 	body: document.body,
-	html: document.documentElement
+	html: document.documentElement,
+
+	remove: function(el) {
+		el.parentNode.removeChild(el);
+	},
+
+	add: function(el, p) {
+		p.appendChild(el);
+	},
+
+	content: function(el, content) {
+		el.innerHTML = content;
+	}
 }
