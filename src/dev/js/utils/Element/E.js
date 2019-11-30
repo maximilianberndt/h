@@ -53,6 +53,7 @@ export const E = {
 	get: function(el, p) {
 	    p = p || document;
 
+	    // Simple selects
 	    if (/^(#?[\w-]+|\.[\w-.]+)$/.test(el)) {
 	        switch (el.charAt(0)) {
 	            case '#':
@@ -64,7 +65,8 @@ export const E = {
 	                return [].slice.call(p.getElementsByTagName(el));
 	        }
 	    }
-	    
+
+	    // Complex selects
 	    return [].slice.call(p.queryelAll(el));
-    }
+	}
 }
