@@ -25,8 +25,8 @@ const gulp = require('gulp'),
 const paths = {
     src: 'src/',
     
-    srcDevHTML: 'src/dev/pages/*.html',
-    srcDevWatchHTML: 'src/dev/pages/**/*.html',
+    srcDevHTML: 'src/dev/html/*.html',
+    srcDevWatchHTML: 'src/dev/html/**/*.html',
     srcHTML: 'src/*.html',
 
     srcCSS: 'src/assets/css/*.css',

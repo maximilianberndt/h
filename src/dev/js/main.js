@@ -8,8 +8,10 @@ import {Dom} from './utils/Dom.js';
 import {E} from './utils/Element/E.js';
 import {S} from './utils/Element/S.js';
 
-import {Mouse} from './utils/Observer/Mouse.js';
-import {Scroll} from './utils/Observer/Scroll.js';
+import {Mouse} from './utils/Modules/MouseObserver.js';
+import {Scroll} from './utils/Modules/ScrollObserver.js';
+import {ScrollReveal} from './utils/Modules/ScrollReveal.js';
+import {Slider} from './utils/Modules/Slider.js';
 
 
 // Service Worker initialisieren
@@ -26,7 +28,10 @@ class App {
 
 		this._addEvents();
 
-		Dom.body.classList.add(G.browser, G.platfrom);
+		Dom.body.classList.add(G.browser, G.platform);
+
+		new ScrollReveal;
+		new Slider;
 
 		// Add test function to render queue
 		R.add(this.testFn);
@@ -35,7 +40,7 @@ class App {
 
 	// Bind Functions
 	_bind() {
-		E.bind(this, ['testFn'])
+		E.bind(this, ['testFn']);
 	}
 
 	// Add Functions
@@ -48,7 +53,7 @@ class App {
 	*	PUBLIC
 	*/
 	testFn() {
-		// console.log(this);
+		// console.log(Scroll.pos)
 	}
 }
 
@@ -56,8 +61,6 @@ class App {
 domready(function () {
 
 	window.A = new App();
-
-	console.log("Testing");
 
 	// Start render queue
 	R.start();

@@ -15,9 +15,5 @@ export const Dom = {
 
 	add: function(el, p) {
 		p.appendChild(el);
-	},
-
-	content: function(el, content) {
-		el.innerHTML = content;
 	}
 }

@@ -1,0 +1,64 @@
+@@include('./templates/head.html')
+
+
+
+
+<!--   @@include('./templates/hello.html', {
+    "name": "Max",
+    "age": 24,
+    "socials": {
+      "fb": "facebook.com/wtf",
+      "tw": "twitter.com/max"
+    }
+  }) -->
+
+
+<div class="slider-container">
+	<div class="btn next"></div>
+	<div class="btn prev"></div>
+
+	<ul>
+		<li><img src="assets/img/about.jpg"></li>
+		<li><img src="assets/img/about.jpg"></li>
+		<li><img src="assets/img/about.jpg"></li>
+		<li><img src="assets/img/about.jpg"></li>
+	</ul>
+</div>
+
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+@@include('./modules/section.html')
+
+
+<style type="text/css">
+	.btn {
+		width: 25px;
+		height: 25px;
+		background-color: black;
+		margin-top: 5px;
+	}
+
+
+	section {
+		width: 50%;
+		height: 25vh;
+		margin: 5vh auto;
+		background-color: pink;
+		opacity: 0;
+		transform: translateY(100px);
+		transition: 0.5s ease-in-out;
+	}
+</style>
+
+
+  	
+@@include('./templates/footer.html')

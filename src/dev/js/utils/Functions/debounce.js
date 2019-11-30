@@ -6,7 +6,7 @@
 *
 *************************************/
 
-export const debounce = (fn, delay) => { 
+export const debounce = (fn, delay) => {
     let dt 
     return function() { 
         const ctx = this

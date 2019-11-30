@@ -236,6 +236,10 @@
   *	// Remove Event Listener
   *	E.add(S.id("headline"), "mouseenter", testFunction);
   *
+  *
+  *	// Change innerHTML
+  *	E.content(el, "newContetn");
+  *
   *	
   *	// Select Element by id
   *	E.get('#headline')
@@ -266,15 +270,27 @@
         el.removeEventListener(type, fn, false);
       }
     },
-    get: function get(el, parent) {
-      var p = parent || document;
-      var type = checkType(el.charAt(0));
-      if (type !== 'tag') el = el.substr(1);
-      return type === "id" ? p.getElementById(el) : type === "class" ? Array.prototype.slice.call(p.getElementsByClassName(el)) : Array.prototype.slice.call(p.getElementsByTagName(el));
+    content: function content(el, _content) {
+      el.innerHTML = _content;
+    },
+    get: function get(el, p) {
+      p = p || document;
 
-      function checkType(el) {
-        return el === '#' ? 'id' : el === '.' ? 'class' : 'tag';
+      if (/^(#?[\w-]+|\.[\w-.]+)$/.test(el)) {
+        switch (el.charAt(0)) {
+          case '#':
+            return [p.getElementById(el.substr(1))];
+
+          case '.':
+            var classes = el.substr(1).replace(/\./g, ' ');
+            return [].slice.call(p.getElementsByClassName(classes));
+
+          default:
+            return [].slice.call(p.getElementsByTagName(el));
+        }
       }
+
+      return [].slice.call(p.queryelAll(el));
     }
   };
 
@@ -307,8 +323,283 @@
   *************************************/
   var Dom = {
     body: document.body,
-    html: document.documentElement
+    html: document.documentElement,
+    remove: function remove(el) {
+      el.parentNode.removeChild(el);
+    },
+    add: function add(el, p) {
+      p.appendChild(el);
+    }
   };
+
+  /*************************************
+  *
+  *	Helper Functions to set style
+  *
+  *   // Transform, opacity, pointerEvents, display
+  *
+  *************************************/
+  var S = {
+    t: function t(el, u) {
+      var x = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var y = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+      el.style.transform = "translate3d(".concat(x).concat(u, ", ").concat(y).concat(u, ", 0px)");
+    },
+    o: function o(el, _o) {
+      el.style.opacity = _o;
+    },
+    pe: function pe(el, _pe) {
+      el.style.pointerEvents = _pe;
+    },
+    d: function d(el, _d) {
+      el.style.display = _d;
+    }
+  };
+
+  /*************************************
+  *
+  *    Observe Scroll Position
+  *
+  *	// Start observing the client scroll Position
+  *	// Can be called many times and will only register one event listener
+  *	// Scroll.start()
+  *	//
+  * 	// OPTIONAL: track speed and set custom ease (higher ease, more damping)
+  *	Scroll.start(true, 0.4)
+  *
+  *	// Stop observing the scroll Position
+  * 	// If observe has been called multiple times, scroll observing will not stop
+  *	Scroll.stop()
+  *
+  *	// Returns current scroll Position
+  *	Scroll.pos
+  *
+  *************************************/
+  var Scroll = {
+    pos: 0,
+    last: 0,
+    speed: 0,
+    _data: {
+      speedFn: null,
+      ease: 0.2,
+      isActive: false
+    },
+    start: function start(speed, ease) {
+      if (this._data.isActive) return; // Add csutom ease or 0.2 ease
+
+      this._data.ease = ease || 0.2; // Bind functions and register event listeners
+
+      E.bind(this, ['_setScroll', '_calcSpeed']);
+      E.add(window, "scroll", this._setScroll); // OPTIONAL: Calculate Scroll speed
+
+      if (speed) this._data.speedFn = R.add(this._calcSpeed);
+    },
+    stop: function stop() {
+      if (!this._data.isActive) return; // Reomve event listener
+
+      E.remove(window, "scroll", this._setScroll); // Reomve _calcSpeed from rendern queue
+
+      if (this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn); // Reset ease
+
+      this._data.ease = 0.2;
+    },
+    _setScroll: function _setScroll() {
+      this.pos = window.scrollY;
+    },
+    _calcSpeed: function _calcSpeed() {
+      this.last = M.lerp(this.last, this.pos, this._data.ease);
+      if (this.last < .1) this.last = 0;
+      this.speed = this.pos - this.last;
+    }
+  };
+
+  var ScrollReveal =
+  /*#__PURE__*/
+  function () {
+    function ScrollReveal() {
+      _classCallCheck(this, ScrollReveal);
+
+      E.bind(this, ['_observeEls']);
+      this.cache = this._fillCache();
+      Scroll.start();
+      this.raf = R.add(this._observeEls);
+    }
+
+    _createClass(ScrollReveal, [{
+      key: "_fillCache",
+      value: function _fillCache() {
+        var cache = [];
+        var els = E.get(".scrollReveal");
+
+        for (var i = 0; i < els.length; i++) {
+          var el = {
+            el: els[i],
+            isVisible: false
+          };
+          var bounds = els[i].getBoundingClientRect();
+          el.top = bounds.top;
+          el.bottom = bounds.bottom - bounds.height * 0.5;
+          el.height = bounds.height;
+          cache.push(el);
+        }
+
+        return cache;
+      }
+    }, {
+      key: "_observeEls",
+      value: function _observeEls() {
+        var revealBreakpoint = Scroll.pos + G.height;
+
+        for (var i = 0; i < this.cache.length; i++) {
+          var el = this.cache[i];
+
+          if (el.isVisible) {
+            continue;
+          }
+
+          if (el.bottom < revealBreakpoint) {
+            el.isVisible = true; // Scroll Reveal
+
+            S.o(el.el, 1);
+            S.t(el.el, 0);
+          }
+        }
+      }
+    }]);
+
+    return ScrollReveal;
+  }();
+
+  var Slider =
+  /*#__PURE__*/
+  function () {
+    function Slider() {
+      _classCallCheck(this, Slider);
+
+      this._bind();
+
+      this.options = {
+        container: '.slider-container',
+        nextButton: '.next',
+        prevButton: '.prev',
+        slider: 'ul',
+        speed: 2,
+        ease: 0.1
+      };
+      this.data = {
+        min: 0,
+        max: 0,
+        isDragging: false,
+        totalEls: 0,
+        progress: 0,
+        startX: 0,
+        endX: 0,
+        lastX: 0,
+        curX: 0,
+        raf: null
+      };
+
+      this._fillCache();
+
+      this._init();
+
+      this._addEvents();
+
+      this.data.raf = R.add(this.run);
+    }
+
+    _createClass(Slider, [{
+      key: "_bind",
+      value: function _bind() {
+        E.bind(this, ['nextSlide', 'prevSlide', 'run', 'on', 'off', 'setPos']);
+      }
+    }, {
+      key: "_addEvents",
+      value: function _addEvents() {
+        var p = this.data.container;
+        E.add(E.get('.next', p), "click", this.nextSlide);
+        E.add(E.get('.prev', p), "click", this.prevSlide);
+        E.add(this.data.slider, "mousedown", this.on);
+        E.add(Dom.body, "mouseup", this.off);
+        E.add(this.data.slider, "mousemove", this.setPos);
+      }
+    }, {
+      key: "_fillCache",
+      value: function _fillCache() {
+        var p = this.data.container = E.get(this.options.container)[0];
+        this.data.nextButton = E.get(this.options.nextButton, p)[0];
+        this.data.prevButton = E.get(this.options.prevButton, p)[0];
+        this.data.slider = E.get(this.options.slider, p)[0];
+        this.data.slides = this.data.slider.children;
+        this.data.totalEls = this.data.slides.length;
+      }
+    }, {
+      key: "_init",
+      value: function _init() {
+        var totalWidth = 0;
+        var slides = this.data.slides;
+
+        for (var i = 0; i < slides.length; i++) {
+          totalWidth += slides[i].getBoundingClientRect().width;
+        }
+
+        this.data.max = -totalWidth + this.data.container.getBoundingClientRect().width / 2;
+        this.data.min = 0;
+        this.data.slider.style.width = totalWidth + "px";
+      }
+    }, {
+      key: "on",
+      value: function on(e) {
+        this.data.startX = e.clientX;
+        this.data.isDragging = true;
+      }
+    }, {
+      key: "off",
+      value: function off() {
+        this.data.endX = this.data.curX;
+        this.data.isDragging = false;
+      }
+    }, {
+      key: "setPos",
+      value: function setPos(e) {
+        if (!this.data.isDragging) return;
+        this.data.curX = this.data.endX + (e.clientX - this.data.startX) * this.options.speed;
+        this.data.curX = M.clamp(this.data.curX, this.data.max, this.data.min);
+      }
+    }, {
+      key: "run",
+      value: function run() {
+        this.data.lastX = M.lerp(this.data.lastX, this.data.curX, this.options.ease);
+        this.data.lastX = Math.floor(this.data.lastX * 100) / 100;
+        this.data.progress = M.map(this.data.lastX, this.data.min, this.data.max, 0, 1);
+        this.data.progress = Math.floor(this.data.progress * 100) / 100;
+        console.log(this.data.progress);
+        S.t(this.data.slider, "px", this.data.lastX);
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        R.remove(this.data.raf);
+        E.add(E.get('.next', p), "click", this.nextSlide);
+        E.add(E.get('.prev', p), "click", this.prevSlide);
+        E.remove(this.data.slider, "mousedown", this.on);
+        E.remove(Dom.body, "mouseup", this.off);
+        E.remove(this.data.slider, "mousemove", this.setPos);
+      }
+    }, {
+      key: "nextSlide",
+      value: function nextSlide() {
+        console.log("next");
+      }
+    }, {
+      key: "prevSlide",
+      value: function prevSlide() {
+        console.log("prev");
+      }
+    }]);
+
+    return Slider;
+  }();
 
   // if ('serviceWorker' in navigator) {
   //   navigator.serviceWorker.register('../../sw.js');
@@ -325,7 +616,9 @@
 
       this._addEvents();
 
-      Dom.body.classList.add(G.browser, G.platfrom); // Add test function to render queue
+      Dom.body.classList.add(G.browser, G.platform);
+      new ScrollReveal();
+      new Slider(); // Add test function to render queue
 
       R.add(this.testFn);
     } // Bind Functions
@@ -348,7 +641,7 @@
 
     }, {
       key: "testFn",
-      value: function testFn() {// console.log(this);
+      value: function testFn() {// console.log(Scroll.pos)
       }
     }]);
 
@@ -356,8 +649,7 @@
   }();
 
   ready(function () {
-    window.A = new App();
-    console.log("Testing"); // Start render queue
+    window.A = new App(); // Start render queue
 
     R.start();
   });

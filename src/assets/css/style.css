@@ -433,11 +433,10 @@ img {
   --bottom: -1; }
 
 body {
-  font-family: 'Helvetica', sans-serif;
+  font-family: "Helvetica", sans-serif;
   background-color: var(--white);
   color: var(--black);
-  line-height: 1.4;
-  height: 500vh; }
+  line-height: 1.4; }
 
 /* Font smoothing hack */
 html, html a {
@@ -457,9 +456,27 @@ noscript {
   top: 0px;
   left: 0px;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: var(--white);
   z-index: var(--alwaysOnTop);
   display: flex;
   justify-content: center;
   align-items: center; }
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden; }
+  .slider-container ul {
+    cursor: move;
+    cursor: grab;
+    height: auto;
+    white-space: nowrap; }
+    .slider-container ul:active {
+      cursor: grabbing; }
+    .slider-container ul li {
+      pointer-events: none;
+      display: inline; }
+  .slider-container img {
+    width: 33.3%;
+    user-select: none; }

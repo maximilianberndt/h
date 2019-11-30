@@ -1,0 +1,27 @@
+.slider-container {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+
+	ul {
+		cursor: move;
+	    cursor: grab;
+	    height: auto;
+	    white-space: nowrap;
+
+	    &:active {
+		    cursor: grabbing;
+		}
+
+		li {
+			pointer-events: none;
+			display: inline;
+		}
+	}
+
+	img {
+		// pointer-events: none;
+		width: 33.3%;
+		user-select: none;
+	}
+}

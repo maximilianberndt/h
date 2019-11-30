@@ -11,6 +11,10 @@
 *	// Remove Event Listener
 *	E.add(S.id("headline"), "mouseenter", testFunction);
 *
+*
+*	// Change innerHTML
+*	E.content(el, "newContetn");
+*
 *	
 *	// Select Element by id
 *	E.get('#headline')
@@ -41,22 +45,26 @@ export const E = {
 	},
 
 
+	content: function(el, content) {
+		el.innerHTML = content;
+	},
 
 
-	get: function(el, parent) {
+	get: function(el, p) {
+	    p = p || document;
 
-        const p = parent || document
-        const type = checkType(el.charAt(0))
-
-        if(type !== 'tag') el = el.substr(1) 
-
-        return  (type === "id") ? p.getElementById(el) : 
-                (type === "class") ? Array.prototype.slice.call(p.getElementsByClassName(el)) : 
-                [].slice.call(p.getElementsByTagName(el))
-
-
-        function checkType(el) {
-            return (el === '#') ? 'id' : (el === '.') ? 'class' : 'tag'
-        }
+	    if (/^(#?[\w-]+|\.[\w-.]+)$/.test(el)) {
+	        switch (el.charAt(0)) {
+	            case '#':
+	                return [p.getElementById(el.substr(1))];
+	            case '.':
+	                var classes = el.substr(1).replace(/\./g, ' ');
+	                return [].slice.call(p.getElementsByClassName(classes));
+	            default:
+	                return [].slice.call(p.getElementsByTagName(el));
+	        }
+	    }
+	    
+	    return [].slice.call(p.queryelAll(el));
     }
 }
