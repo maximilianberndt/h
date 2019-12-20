@@ -2,6 +2,15 @@
 *
 *    Reveal Elements on Scroll
 *
+*	// Create new slider
+*	let slider = new Slider
+*
+*	// Remove from raf to save performance
+*	slider.stop();
+*
+*	// Put back into raf
+*	slider.stop();
+*
 *************************************/
 
 import {E} from '../Element/E.js';
@@ -14,8 +23,7 @@ import {Dom} from '../Dom.js';
 
 export class Slider {
 	
-	constructor() {
-
+	constructor(child = 0) {
 		this._bind();
 
 		this.options = {
@@ -25,6 +33,7 @@ export class Slider {
 			slider: 'ul',
 			speed: 2,
 			ease: 0.1,
+			child: child,
 		}
 
 		this.data = {
@@ -45,10 +54,6 @@ export class Slider {
 		this._fillCache();
 
 		this._init();
-
-		this._addEvents();
-
-		this.data.raf = R.add(this.run);
 	}
 
 
@@ -65,17 +70,10 @@ export class Slider {
 		E.add( this.data.slider, "mousedown", this.on );
 		E.add( Dom.body, "mouseup", this.off );
 		E.add( this.data.slider, "mousemove", this.setPos );
-	}
 
-	_fillCache() {
-		let p = this.data.container = E.get(this.options.container)[0];
-
-		this.data.nextButton = E.get(this.options.nextButton, p)[0];
-		this.data.prevButton = E.get(this.options.prevButton, p)[0];
-		this.data.slider = E.get(this.options.slider, p)[0];
-		this.data.slides = this.data.slider.children;
-
-		this.data.totalEls = this.data.slides.length;
+		E.add( this.data.slider, "touchstart", this.on );
+		E.add( Dom.body, "touchend", this.off );
+		E.add( this.data.slider, "touchmove", this.setPos, true );
 	}
 
 	_init() {
@@ -89,10 +87,50 @@ export class Slider {
 		this.data.max = -totalWidth + this.data.container.getBoundingClientRect().width/2;
 		this.data.min = 0;
 		this.data.slider.style.width = totalWidth + "px";
+
+		this._addEvents();
+
+		this._start();
 	}
 
+	destroy() {
+		this._stop();
+	    
+	    E.remove( E.get('.next', p), "click", this.nextSlide );
+		E.remove( E.get('.prev', p), "click", this.prevSlide );
+
+		E.remove( this.data.slider, "mousedown", this.on );
+		E.remove( Dom.body, "mouseup", this.off );
+		E.remove( this.data.slider, "mousemove", this.setPos );
+	}
+
+	_fillCache() {
+		let child = this.options.child;
+		let p = this.data.container = E.get(this.options.container)[child];
+
+		this.data.nextButton = E.get(this.options.nextButton, p)[0];
+		this.data.prevButton = E.get(this.options.prevButton, p)[0];
+		this.data.slider = E.get(this.options.slider, p)[0];
+
+		this.data.slides = this.data.slider.children;
+
+		this.data.totalEls = this.data.slides.length;
+	}
+
+	_start() {
+		this.data.raf = R.add(this.run);
+	}
+
+	_stop() {
+		R.remove(this.data.raf);
+	}
+
+
+
+
+
 	on(e) {
-		this.data.startX = e.clientX;
+		this.data.startX = e.clientX || e.touches[0].pageX;
 		this.data.isDragging = true;
 	}
 
@@ -104,7 +142,8 @@ export class Slider {
 	setPos(e) {
 		if (!this.data.isDragging) return;
 
-		this.data.curX = this.data.endX + ((e.clientX - this.data.startX) * this.options.speed);
+		let cur = e.clientX || e.touches[0].pageX;
+		this.data.curX = this.data.endX + ((cur - this.data.startX) * this.options.speed);
 		this.data.curX = M.clamp(this.data.curX, this.data.max, this.data.min);
 	}
 
@@ -116,25 +155,10 @@ export class Slider {
 		this.data.progress = M.map(this.data.lastX, this.data.min, this.data.max, 0, 1);
 		this.data.progress = Math.floor(this.data.progress * 100) / 100;;
 
-		console.log(this.data.progress)
-
 
 		S.t(this.data.slider, "px", this.data.lastX );
 	}
 
-
-
-
-	stop() {
-	    R.remove(this.data.raf);
-	    
-	    E.add( E.get('.next', p), "click", this.nextSlide );
-		E.add( E.get('.prev', p), "click", this.prevSlide );
-
-		E.remove( this.data.slider, "mousedown", this.on );
-		E.remove( Dom.body, "mouseup", this.off );
-		E.remove( this.data.slider, "mousemove", this.setPos );
-	}
 
 
 	nextSlide() {

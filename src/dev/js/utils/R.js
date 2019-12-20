@@ -95,7 +95,10 @@ export const R = {
         this._data.then = this._data.now - (this._data.elapsed % this._data.fpsInterval);
 
         // Execute all functions
-    	this.renderQueue.forEach( fn => fn.fn() );
+        let rqLength = this.renderQueue.length
+        for(let i = 0; i < rqLength; i++) { 
+        	this.renderQueue[i].fn()
+        }
 
 
         // TESTING - Report fps

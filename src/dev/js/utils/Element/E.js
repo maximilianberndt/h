@@ -25,22 +25,26 @@
 
 export const E = {
 	bind: function(_this, fns) {
-		fns.forEach((fn) => _this[fn] = _this[fn].bind(_this))
+		
+		let fnsLength = fns.length
+        for(let i = 0; i < fnsLength; i++) { 
+        	_this[fns[i]] = _this[fns[i]].bind(_this)
+        }
 	},
 
-	add: function(el, type, fn) {
+	add: function(el, type, fn, passive = false) {
 		if(el.length) {
-			el.forEach( el => el.addEventListener(type, fn, false) )
+			el.forEach( el => el.addEventListener(type, fn, passive) )
 		} else {
-			el.addEventListener(type, fn, false)
+			el.addEventListener(type, fn, passive)
 		}
 	},
 
-	remove: function(el, type, fn) {
+	remove: function(el, type, fn, passive = false) {
 		if(el.length) {
-			el.forEach( el => el.removeEventListener(type, fn, false) )
+			el.forEach( el => el.removeEventListener(type, fn, passive) )
 		} else {
-			el.removeEventListener(type, fn, false)
+			el.removeEventListener(type, fn, passive)
 		}
 	},
 

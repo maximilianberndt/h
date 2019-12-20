@@ -31,7 +31,14 @@ class App {
 		Dom.body.classList.add(G.browser, G.platform);
 
 		new ScrollReveal;
-		new Slider;
+		
+		let sliders = []
+
+		setTimeout(function(){ 
+			E.get(".slider-container").forEach( (slider, i) => sliders[i] = new Slider(i)) 
+		}, 500);
+
+		// new Slider;
 
 		// Add test function to render queue
 		R.add(this.testFn);
