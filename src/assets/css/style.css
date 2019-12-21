@@ -467,16 +467,18 @@ noscript {
   position: relative;
   width: 100%;
   overflow: hidden; }
-  .slider-container ul {
+  .slider-container .slider {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
     cursor: move;
     cursor: grab;
-    height: auto;
-    white-space: nowrap; }
-    .slider-container ul:active {
+    height: auto; }
+    .slider-container .slider:active {
       cursor: grabbing; }
-    .slider-container ul li {
-      pointer-events: none;
-      display: inline; }
+  .slider-container .slide-el {
+    display: flex;
+    flex-shrink: 0; }
   .slider-container img {
-    width: 33.3%;
+    pointer-events: none;
     user-select: none; }

@@ -34,11 +34,7 @@ class App {
 		
 		let sliders = []
 
-		setTimeout(function(){ 
-			E.get(".slider-container").forEach( (slider, i) => sliders[i] = new Slider(i)) 
-		}, 500);
-
-		// new Slider;
+		E.get(".slider-container").forEach( (container, i) => sliders[i] = new Slider(container)) 
 
 		// Add test function to render queue
 		R.add(this.testFn);

@@ -3,25 +3,27 @@
 	width: 100%;
 	overflow: hidden;
 
-	ul {
+	.slider {
+		display: flex;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+
 		cursor: move;
-	    cursor: grab;
-	    height: auto;
-	    white-space: nowrap;
+		cursor: grab;
+		height: auto;
 
-	    &:active {
+		 &:active {
 		    cursor: grabbing;
-		}
-
-		li {
-			pointer-events: none;
-			display: inline;
 		}
 	}
 
+	.slide-el {
+		display: flex;
+		flex-shrink: 0;
+	}
+
 	img {
-		// pointer-events: none;
-		width: 33.3%;
+		pointer-events: none;
 		user-select: none;
 	}
 }

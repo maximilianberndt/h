@@ -15,5 +15,9 @@ export const Dom = {
 
 	add: function(el, p) {
 		p.appendChild(el);
-	}
+	},
+
+	create: function(newEl) {
+		return document.createElement(newEl)
+	},
 }

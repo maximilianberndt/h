@@ -339,6 +339,9 @@
     },
     add: function add(el, p) {
       p.appendChild(el);
+    },
+    create: function create(newEl) {
+      return document.createElement(newEl);
     }
   };
 
@@ -483,27 +486,26 @@
   var Slider =
   /*#__PURE__*/
   function () {
-    function Slider() {
-      var child = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
+    function Slider(container) {
       _classCallCheck(this, Slider);
+
+      if (!container) return;
 
       this._bind();
 
       this.options = {
-        container: '.slider-container',
+        container: container,
         nextButton: '.next',
         prevButton: '.prev',
-        slider: 'ul',
+        slider: '.slider',
+        slideEl: '.slide-el',
         speed: 2,
-        ease: 0.1,
-        child: child
+        ease: 0.1
       };
       this.data = {
         min: 0,
         max: 0,
         isDragging: false,
-        totalEls: 0,
         progress: 0,
         startX: 0,
         endX: 0,
@@ -514,66 +516,88 @@
 
       this._fillCache();
 
-      this._init();
+      this._getBounds();
+
+      this._addEvents();
+
+      this._start();
     }
 
     _createClass(Slider, [{
+      key: "findClosest",
+      value: function findClosest(goal, array) {
+        var closest = array.reduce(function (prev, curr) {
+          return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+        });
+        return array.indexOf(closest);
+      }
+    }, {
       key: "_bind",
       value: function _bind() {
-        E.bind(this, ['nextSlide', 'prevSlide', 'run', 'on', 'off', 'setPos']);
+        E.bind(this, ['nextSlide', 'prevSlide', 'run', 'on', 'off', 'setPos', '_onResize']);
       }
     }, {
       key: "_addEvents",
       value: function _addEvents() {
         var p = this.data.container;
-        E.add(E.get('.next', p), "click", this.nextSlide);
-        E.add(E.get('.prev', p), "click", this.prevSlide);
-        E.add(this.data.slider, "mousedown", this.on);
+
+        var _this = this;
+
+        if (this.nextButton) E.add(this.nextButton, "click", this.nextSlide);
+        if (this.nextButton) E.add(this.prevButton, "click", this.prevSlide);
+        E.add(window, "resize", debounce(_this._onResize, 250));
+        E.add(this.container, "mousedown", this.on);
         E.add(Dom.body, "mouseup", this.off);
-        E.add(this.data.slider, "mousemove", this.setPos);
-        E.add(this.data.slider, "touchstart", this.on);
+        E.add(this.container, "mousemove", this.setPos);
+        E.add(this.container, "touchstart", this.on);
         E.add(Dom.body, "touchend", this.off);
-        E.add(this.data.slider, "touchmove", this.setPos, true);
+        E.add(this.container, "touchmove", this.setPos, true);
       }
     }, {
-      key: "_init",
-      value: function _init() {
+      key: "_getBounds",
+      value: function _getBounds() {
         var totalWidth = 0;
-        var slides = this.data.slides;
+        this.snapPoints = [];
 
-        for (var i = 0; i < slides.length; i++) {
-          totalWidth += slides[i].getBoundingClientRect().width;
+        for (var i = 0; i < this.slides.length; i++) {
+          var slideBCR = this.slides[i].getBoundingClientRect();
+          var slideWidth = slideBCR.width;
+          var snapPoint = -(slideWidth / 2 + totalWidth);
+          this.snapPoints.push(snapPoint);
+          totalWidth += slideWidth;
         }
 
-        this.data.max = -totalWidth + this.data.container.getBoundingClientRect().width / 2;
+        this.data.max = -(totalWidth - G.width);
         this.data.min = 0;
-        this.data.slider.style.width = totalWidth + "px";
-
-        this._addEvents();
-
-        this._start();
       }
     }, {
-      key: "destroy",
-      value: function destroy() {
+      key: "_onResize",
+      value: function _onResize() {
+        this._getBounds();
+      }
+    }, {
+      key: "_destroy",
+      value: function _destroy() {
         this._stop();
 
-        E.remove(E.get('.next', p), "click", this.nextSlide);
-        E.remove(E.get('.prev', p), "click", this.prevSlide);
-        E.remove(this.data.slider, "mousedown", this.on);
+        if (this.nextButton) E.remove(this.nextButton, "click", this.nextSlide);
+        if (this.nextButton) E.remove(this.prevButton, "click", this.prevSlide);
+        E.remove(window, "resize", _this._onResize);
+        E.remove(this.container, "mousedown", this.on);
         E.remove(Dom.body, "mouseup", this.off);
-        E.remove(this.data.slider, "mousemove", this.setPos);
+        E.remove(this.container, "mousemove", this.setPos);
+        E.remove(this.container, "touchstart", this.on);
+        E.remove(Dom.body, "touchend", this.off);
+        E.remove(this.container, "touchmove", this.setPos, true);
       }
     }, {
       key: "_fillCache",
       value: function _fillCache() {
-        var child = this.options.child;
-        var p = this.data.container = E.get(this.options.container)[child];
-        this.data.nextButton = E.get(this.options.nextButton, p)[0];
-        this.data.prevButton = E.get(this.options.prevButton, p)[0];
-        this.data.slider = E.get(this.options.slider, p)[0];
-        this.data.slides = this.data.slider.children;
-        this.data.totalEls = this.data.slides.length;
+        var p = this.container = this.options.container;
+        this.nextButton = E.get(this.options.nextButton, p);
+        this.prevButton = E.get(this.options.prevButton, p);
+        this.slider = E.get(this.options.slider, p)[0];
+        this.slides = E.get(this.options.slideEl, p);
       }
     }, {
       key: "_start",
@@ -612,17 +636,23 @@
         this.data.lastX = Math.floor(this.data.lastX * 100) / 100;
         this.data.progress = M.map(this.data.lastX, this.data.min, this.data.max, 0, 1);
         this.data.progress = Math.floor(this.data.progress * 100) / 100;
-        S.t(this.data.slider, "px", this.data.lastX);
+        S.t(this.slider, "px", this.data.lastX);
       }
     }, {
       key: "nextSlide",
       value: function nextSlide() {
-        console.log("next");
+        var curSnappoint = this.findClosest(this.data.lastX, this.snapPoints);
+        curSnappoint++;
+        var newSnapPos = this.snapPoints[curSnappoint];
+        if (newSnapPos && newSnapPos > this.data.max) this.data.curX = this.data.endX = newSnapPos;
       }
     }, {
       key: "prevSlide",
       value: function prevSlide() {
-        console.log("prev");
+        var curSnappoint = this.findClosest(this.data.lastX, this.snapPoints);
+        curSnappoint--;
+        var newSnapPos = this.snapPoints[curSnappoint];
+        if (newSnapPos && newSnapPos > this.data.max) this.data.curX = this.data.endX = newSnapPos;
       }
     }]);
 
@@ -647,12 +677,9 @@
       Dom.body.classList.add(G.browser, G.platform);
       new ScrollReveal();
       var sliders = [];
-      setTimeout(function () {
-        E.get(".slider-container").forEach(function (slider, i) {
-          return sliders[i] = new Slider(i);
-        });
-      }, 500); // new Slider;
-      // Add test function to render queue
+      E.get(".slider-container").forEach(function (container, i) {
+        return sliders[i] = new Slider(container);
+      }); // Add test function to render queue
 
       R.add(this.testFn);
     } // Bind Functions

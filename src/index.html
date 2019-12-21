@@ -59,52 +59,20 @@
 	<div class="btn next"></div>
 	<div class="btn prev"></div>
 
-	<ul>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-	</ul>
+	<div class="slider">
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+		<div class="slide-el"><img src="assets/img/about.jpg"></div>
+	</div>
 </div>
 
-
-
-<div class="slider-container">
-	<div class="btn next"></div>
-	<div class="btn prev"></div>
-
-	<ul>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-	</ul>
-</div>
-
-
-<div class="slider-container">
-	<div class="btn next"></div>
-	<div class="btn prev"></div>
-
-	<ul>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-	</ul>
-</div>
-
-<div class="slider-container">
-	<div class="btn next"></div>
-	<div class="btn prev"></div>
-
-	<ul>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-		<li><img src="assets/img/about.jpg"></li>
-	</ul>
-</div>
 
 <section class="scrollReveal"></section>
 
@@ -149,6 +117,14 @@
 		opacity: 0;
 		transform: translateY(100px);
 		transition: 0.5s ease-in-out;
+	}
+
+	.slide-el {
+		width: 42%;
+	}
+
+	.slide-el:not(:last-child) {
+		padding-right: 30px;
 	}
 </style>
 
