@@ -150,6 +150,7 @@
     platform: getPlatform(),
     width: window.innerWidth,
     height: window.innerHeight,
+    isReady: false,
     i: function () {
       var resizeFn = function resizeFn() {
         utils.G.width = window.innerWidth;
@@ -194,7 +195,7 @@
     renderQueue: [],
     add: function add(fn) {
       var newFn = {
-        id: rand(utils.rand(1, 99999999)),
+        id: Math.round(rand(1, 99999999)),
         fn: fn
       }; // Add to render loop
 
@@ -252,6 +253,20 @@
     }
   };
 
+  // basic intersetion observer
+  var IO = function IO(el, cb) {
+    // Create new IntersectionObserver
+    var io = new IntersectionObserver(function (entries) {
+      updateStatus(entries[0]);
+    }); // Start observing
+
+    io.observe(el); // the cb
+
+    function updateStatus(data) {
+      if (G.isReady) return cb(data);
+    }
+  };
+
   /*************************************
    *
    *  Base for helper functions
@@ -268,12 +283,13 @@
     getBrowser: getBrowser,
     getPlatform: getPlatform,
     G: G,
-    R: R
+    R: R,
+    IO: IO
   };
 
-  // import {Scroll} from './utils/Modules/ScrollObserver.js';
-  // import {ScrollReveal} from './utils/Modules/ScrollReveal.js';
-  // import {Slider} from './utils/Modules/Slider.js';
+  // import {Scroll} from './Modules/ScrollObserver.js';
+  // import {ScrollReveal} from './Modules/ScrollReveal.js';
+  // import {Slider} from './Modules/Slider.js';
 
   var App = /*#__PURE__*/function () {
     function App() {
@@ -282,12 +298,20 @@
       // Bind functions
       this._bind();
 
-      this._addEvents(); // H.Dom.body.classList.add(G.browser, G.platform)
-      // Add test function to render queue
+      this._addEvents();
 
-
-      utils$1.R.add(this.testFn);
-      utils$1.R.start();
+      document.body.classList.add(utils$1.G.browser, utils$1.G.platform);
+      document.querySelectorAll(".test").forEach(function (el) {
+        utils$1.IO(el, function (data) {
+          if (data.isIntersecting) {
+            console.log(data);
+          } else {
+            console.log("is hidden now");
+          }
+        });
+      }); // Add test function to render queue
+      // utils.R.add(this.testFn);
+      // utils.R.start();
     } // Bind Functions
 
 
@@ -308,7 +332,8 @@
 
     }, {
       key: "testFn",
-      value: function testFn() {// console.log(this.vs)
+      value: function testFn() {
+        console.log("test");
       }
     }]);
 
@@ -317,6 +342,7 @@
 
   ready(function () {
     window.A = new App();
+    utils$1.G.isReady = true;
   });
 
 })));

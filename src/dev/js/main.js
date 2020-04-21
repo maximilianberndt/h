@@ -1,25 +1,35 @@
 import domready from 'domready'
-import {utils} from './utils/main';
+import { utils } from './utils/main';
 
-// import {Mouse} from './utils/Modules/MouseObserver.js';
-// import {Scroll} from './utils/Modules/ScrollObserver.js';
-// import {ScrollReveal} from './utils/Modules/ScrollReveal.js';
-// import {Slider} from './utils/Modules/Slider.js';
+// import {Mouse} from './Modules/MouseObserver.js';
+// import {Scroll} from './Modules/ScrollObserver.js';
+// import {ScrollReveal} from './Modules/ScrollReveal.js';
+// import {Slider} from './Modules/Slider.js';
 
 class App {
-	constructor () {
+	constructor() {
 
 		// Bind functions
 		this._bind();
 
 		this._addEvents();
 
-		// H.Dom.body.classList.add(G.browser, G.platform)
+		document.body.classList.add(utils.G.browser, utils.G.platform);
+
+		document.querySelectorAll(".test").forEach((el) => {
+			utils.IO(el, (data) => {
+				if (data.isIntersecting) {
+					console.log(data)
+				} else {
+					console.log("is hidden now")
+				}
+			});
+		});
 
 		// Add test function to render queue
-		utils.R.add(this.testFn);
+		// utils.R.add(this.testFn);
 
-		utils.R.start();
+		// utils.R.start();
 	}
 
 
@@ -38,11 +48,12 @@ class App {
 	*	PUBLIC
 	*/
 	testFn() {
-		// console.log(this.vs)
+		console.log("test")
 	}
 }
 
 
 domready(function () {
 	window.A = new App();
+	utils.G.isReady = true;
 })

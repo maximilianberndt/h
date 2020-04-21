@@ -14,6 +14,7 @@ export const G = {
 	platform: getPlatform(),
 	width: window.innerWidth,
 	height: window.innerHeight,
+	isReady: false,
 
 	i: (() => {
 		var resizeFn = function () {

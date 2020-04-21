@@ -38,7 +38,7 @@ export const R = {
 	add: function (fn) {
 
 		let newFn = {
-			id: rand(utils.rand(1, 99999999)),
+			id: Math.round(rand(1, 99999999)),
 			fn: fn
 		}
 
