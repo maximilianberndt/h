@@ -1,29 +1,45 @@
-// basic intersetion observer
-// pass element
-// cb returns 0 or 1 if in view
-// usage: 
-// this.io(elem, (inView) => {
-// 	if ( inView ) {
-// 		functionName1();
-// 	} else {
-// 		functionName2();
-// 	}
-// });
+/*************************************
+*
+*	Intersection Observer
+*
+*    Fires when Element comes into the viewport and when it leaves
+*
+*	new IO({ el: el, fnIn: fnIn, fnOut: fnOut, threshold: 0.3, fireOnLoad: true })
+*
+*************************************/
 
-import { G } from "./G.js"
 
-export const IO = (el, cb) => {
+export class IO {
+	constructor({ el, fnIn = null, fnOut = null, threshold = 0, fireOnLoad = false } = {}) {
 
-	// Create new IntersectionObserver
-	const io = new IntersectionObserver(entries => {
-		updateStatus(entries[0]);
-	});
+		this.el = el;
+		this.fnIn = fnIn;
+		this.fnOut = fnOut;
+		this.threshold = threshold;
+		this.fireOnLoad = false;
 
-	// Start observing
-	io.observe(el);
+		const options = {
+			threshold: threshold
+		}
 
-	// the cb
-	function updateStatus(data) {
-		if (G.isReady) return cb(data);
+		// Triggers every time an intersection happens
+		let cb = (entries, observer) => {
+			if (this.fireOnLoad) {
+				if (entries[0].isIntersecting) {
+					// Element comes into the viewport
+					if (this.fnIn) this.fnIn()
+				} else {
+					// Element leaves the viewport 
+					if (this.fnOut) this.fnOut()
+				}
+			} else {
+				// Prevent callback from firing on initialization
+				this.fireOnLoad = true;
+			}
+		};
+
+		const observer = new IntersectionObserver(cb, options);
+
+		observer.observe(this.el);
 	}
-};
+}

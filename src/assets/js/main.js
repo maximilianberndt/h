@@ -150,7 +150,6 @@
     platform: getPlatform(),
     width: window.innerWidth,
     height: window.innerHeight,
-    isReady: false,
     i: function () {
       var resizeFn = function resizeFn() {
         utils.G.width = window.innerWidth;
@@ -253,18 +252,56 @@
     }
   };
 
-  // basic intersetion observer
-  var IO = function IO(el, cb) {
-    // Create new IntersectionObserver
-    var io = new IntersectionObserver(function (entries) {
-      updateStatus(entries[0]);
-    }); // Start observing
+  /*************************************
+  *
+  *	Intersection Observer
+  *
+  *    Fires when Element comes into the viewport and when it leaves
+  *
+  *	new IO({ el: el, fnIn: fnIn, fnOut: fnOut, threshold: 0.3, fireOnLoad: true })
+  *
+  *************************************/
+  var IO = function IO() {
+    var _this = this;
 
-    io.observe(el); // the cb
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        el = _ref.el,
+        _ref$fnIn = _ref.fnIn,
+        fnIn = _ref$fnIn === void 0 ? null : _ref$fnIn,
+        _ref$fnOut = _ref.fnOut,
+        fnOut = _ref$fnOut === void 0 ? null : _ref$fnOut,
+        _ref$threshold = _ref.threshold,
+        threshold = _ref$threshold === void 0 ? 0 : _ref$threshold,
+        _ref$fireOnLoad = _ref.fireOnLoad;
 
-    function updateStatus(data) {
-      if (G.isReady) return cb(data);
-    }
+    _classCallCheck(this, IO);
+
+    this.el = el;
+    this.fnIn = fnIn;
+    this.fnOut = fnOut;
+    this.threshold = threshold;
+    this.fireOnLoad = false;
+    var options = {
+      threshold: threshold
+    }; // Triggers every time an intersection happens
+
+    var cb = function cb(entries, observer) {
+      if (_this.fireOnLoad) {
+        if (entries[0].isIntersecting) {
+          // Element comes into the viewport
+          if (_this.fnIn) _this.fnIn();
+        } else {
+          // Element leaves the viewport 
+          if (_this.fnOut) _this.fnOut();
+        }
+      } else {
+        // Prevent callback from firing on initialization
+        _this.fireOnLoad = true;
+      }
+    };
+
+    var observer = new IntersectionObserver(cb, options);
+    observer.observe(this.el);
   };
 
   /*************************************
@@ -272,7 +309,7 @@
    *  Base for helper functions
    *
    *************************************/
-  var utils$1 = {
+  var utils = {
     map: map,
     lerp: lerp,
     clamp: clamp,
@@ -300,14 +337,21 @@
 
       this._addEvents();
 
-      document.body.classList.add(utils$1.G.browser, utils$1.G.platform);
+      document.body.classList.add(utils.G.browser, utils.G.platform);
       document.querySelectorAll(".test").forEach(function (el) {
-        utils$1.IO(el, function (data) {
-          if (data.isIntersecting) {
-            console.log(data);
-          } else {
-            console.log("is hidden now");
-          }
+        var fnIn = function fnIn() {
+          console.log("Hello");
+        };
+
+        var fnOut = function fnOut() {
+          console.log("Bye bye");
+        };
+
+        new utils.IO({
+          el: el,
+          fnIn: fnIn,
+          fnOut: fnOut,
+          threshold: 0.3
         });
       }); // Add test function to render queue
       // utils.R.add(this.testFn);
@@ -318,7 +362,7 @@
     _createClass(App, [{
       key: "_bind",
       value: function _bind() {
-        utils$1.bind(this, ['testFn']);
+        utils.bind(this, ['testFn']);
       } // Add Functions
 
     }, {
@@ -342,7 +386,6 @@
 
   ready(function () {
     window.A = new App();
-    utils$1.G.isReady = true;
   });
 
 })));

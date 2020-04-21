@@ -8,13 +8,13 @@
 
 import { getBrowser, getPlatform } from '../Functions/Sniff.js';
 import { debounce } from '../Functions/debounce.js';
+import { utils } from '../main.js';
 
 export const G = {
 	browser: getBrowser(),
 	platform: getPlatform(),
 	width: window.innerWidth,
 	height: window.innerHeight,
-	isReady: false,
 
 	i: (() => {
 		var resizeFn = function () {

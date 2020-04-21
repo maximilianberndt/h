@@ -17,13 +17,16 @@ class App {
 		document.body.classList.add(utils.G.browser, utils.G.platform);
 
 		document.querySelectorAll(".test").forEach((el) => {
-			utils.IO(el, (data) => {
-				if (data.isIntersecting) {
-					console.log(data)
-				} else {
-					console.log("is hidden now")
-				}
-			});
+
+			const fnIn = function () {
+				console.log("Hello")
+			}
+
+			const fnOut = function () {
+				console.log("Bye bye")
+			}
+
+			new utils.IO({ el: el, fnIn: fnIn, fnOut: fnOut, threshold: 0.3 });
 		});
 
 		// Add test function to render queue
@@ -55,5 +58,4 @@ class App {
 
 domready(function () {
 	window.A = new App();
-	utils.G.isReady = true;
 })
