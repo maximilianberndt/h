@@ -19,16 +19,13 @@
 *
 *************************************/
 
-import {E} from '../Element/E.js';
-import {M} from '../M.js';
-import {R} from '../R.js';
-
+import { utils } from "../utils/main.js"
 
 export const Mouse = {
 	pos: {
 		x: 0,
 		y: 0
-	}, 
+	},
 	last: {
 		x: 0,
 		y: 0
@@ -41,44 +38,45 @@ export const Mouse = {
 		isActive: false,
 	},
 
-	start: function(speed, ease) {
+	start: function (speed, ease) {
 
-		if(this._data.isActive) return
+		if (this._data.isActive) return
 
 		this._data.ease = ease || 0.2;
 
-		E.bind(this, ['_setPos', '_calcSpeed']);
-		E.add(document, "mousemove", this._setPos);
+		utils.bind(this, ['_setPos', '_calcSpeed']);
 
-		if(speed) this._data.speedFn = R.add(this._calcSpeed);
+		document.addEventListener("mousemove", this._setPos)
+
+		if (speed) this._data.speedFn = R.add(this._calcSpeed);
 	},
 
-	stop: function() {
-		if(!this._data.isActive) return
+	stop: function () {
+		if (!this._data.isActive) return
 
-		E.remove(document, "mousemove", this._setPos);
+		document.removeEventListener("mousemove", this._setPos)
 
 		// Reomve _calcSpeed from rendern queue
-		if(this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);
+		if (this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);
 
 		// Reset ease
 		this._data.ease = 0.2;
 	},
 
-	_setPos: function() {
+	_setPos: function () {
 		this.pos = {
 			x: event.clientX,
 			y: event.clientY
 		}
 	},
 
-	_calcSpeed: function() {
+	_calcSpeed: function () {
 		this.last.x = M.lerp(this.last.x, this.pos.x, this._data.ease);
 		this.last.y = M.lerp(this.last.y, this.pos.y, this._data.ease);
 
-	    if (this.last.x < .1) this.last.x = 0;
-	    if (this.last.y < .1) this.last.y = 0;
+		if (this.last.x < .1) this.last.x = 0;
+		if (this.last.y < .1) this.last.y = 0;
 
-    	this.speed = (this.pos.x - this.last.x + this.pos.y - this.last.y) / 2;
+		this.speed = (this.pos.x - this.last.x + this.pos.y - this.last.y) / 2;
 	}
 }

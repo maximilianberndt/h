@@ -13,13 +13,7 @@
 *
 *************************************/
 
-import {E} from '../Element/E.js';
-import {S} from '../Element/S.js';
-import {R} from '../R.js';
-import {G} from '../G.js';
-import {M} from '../M.js';
-import {Dom} from '../Dom.js';
-import {debounce} from '../Functions/debounce.js';
+import { utils } from "../utils/main.js"
 
 export class Slider {
 	
@@ -73,25 +67,25 @@ export class Slider {
 
 
 	_bind() {
-		E.bind(this, ['nextSlide', 'prevSlide', 'run', 'on', 'off', 'setPos', '_onResize']);
+		utils.bind(this, ['nextSlide', 'prevSlide', 'run', 'on', 'off', 'setPos', '_onResize']);
 	}
 
 	_addEvents() {
 		let p = this.data.container;
 		let _this = this;
 
-		if(this.nextButton) E.add( this.nextButton, "click", this.nextSlide );
-		if(this.nextButton) E.add( this.prevButton, "click", this.prevSlide );
+		if(this.nextButton) this.nextButton.addEventListener("click", this.nextSlide );
+		if(this.nextButton) this.prevButton.addEventListener("click", this.prevSlide );
 
-		E.add(window, "resize", debounce(_this._onResize , 250))
+		window.addEventListener("resize", debounce(_this._onResize , 250))
 
-		E.add( this.container, "mousedown", this.on );
-		E.add( Dom.body, "mouseup", this.off );
-		E.add( this.container, "mousemove", this.setPos );
+		this.container.addEventListener("mousedown", this.on );
+		document.body.addEventListener("mouseup", this.off );
+		this.container.addEventListener("mousemove", this.setPos );
 
-		E.add( this.container, "touchstart", this.on );
-		E.add( Dom.body, "touchend", this.off );
-		E.add( this.container, "touchmove", this.setPos, true );
+		this.container.addEventListener("touchstart", this.on );
+		document.body.addEventListener("touchend", this.off );
+		this.container.addEventListener("touchmove", this.setPos, true )
 	}
 
 	_getBounds() {
@@ -121,18 +115,18 @@ export class Slider {
 	_destroy() {
 		this._stop();
 
-		if(this.nextButton) E.remove( this.nextButton, "click", this.nextSlide );
-		if(this.nextButton) E.remove( this.prevButton, "click", this.prevSlide );
+		if(this.nextButton) this.nextButton.removeEventListener("click", this.nextSlide );
+		if(this.nextButton) this.prevButton.removeEventListener("click", this.prevSlide );
 
-		E.remove(window, "resize", _this._onResize)
+		window.removeEventListener("resize", debounce(_this._onResize , 250))
 
-		E.remove( this.container, "mousedown", this.on );
-		E.remove( Dom.body, "mouseup", this.off );
-		E.remove( this.container, "mousemove", this.setPos );
+		this.container.removeEventListener("mousedown", this.on );
+		document.body.removeEventListener("mouseup", this.off );
+		this.container.removeEventListener("mousemove", this.setPos );
 
-		E.remove( this.container, "touchstart", this.on );
-		E.remove( Dom.body, "touchend", this.off );
-		E.remove( this.container, "touchmove", this.setPos, true );
+		this.container.removeEventListener("touchstart", this.on );
+		document.body.removeEventListener("touchend", this.off );
+		this.container.removeEventListener("touchmove", this.setPos, true )
 	}
 
 	_fillCache() {
@@ -146,11 +140,11 @@ export class Slider {
 	}
 
 	_start() {
-		this.data.raf = R.add(this.run);
+		this.data.raf = utils.R.add(this.run);
 	}
 
 	_stop() {
-		R.remove(this.data.raf);
+		utils.R.remove(this.data.raf);
 	}
 
 
@@ -172,18 +166,18 @@ export class Slider {
 
 		let cur = e.clientX || e.touches[0].pageX;
 		this.data.curX = this.data.endX + ((cur - this.data.startX) * this.options.speed);
-		this.data.curX = M.clamp(this.data.curX, this.data.max, this.data.min);
+		this.data.curX = utils.clamp(this.data.curX, this.data.max, this.data.min);
 	}
 
 
 	run() {
-		this.data.lastX = M.lerp(this.data.lastX, this.data.curX, this.options.ease);
+		this.data.lastX = utils.lerp(this.data.lastX, this.data.curX, this.options.ease);
 		this.data.lastX = Math.floor(this.data.lastX * 100) / 100;
 
-		this.data.progress = M.map(this.data.lastX, this.data.min, this.data.max, 0, 1);
-		this.data.progress = Math.floor(this.data.progress * 100) / 100;;
+		this.data.progress = utils.map(this.data.lastX, this.data.min, this.data.max, 0, 1);
+		this.data.progress = Math.floor(this.data.progress * 100) / 100;
 
-		S.t(this.slider, "px", this.data.lastX );
+		this.slider.style.cssText = `transform: translate3d(${this.data.lastX }px, 0px, 0px)`
 	}
 
 

@@ -18,10 +18,7 @@
 *
 *************************************/
 
-import {E} from '../Element/E.js';
-import {M} from '../M.js';
-import {R} from '../R.js';
-
+import { utils } from "../utils/main.js"
 
 export const Scroll = {
 	pos: 0, 
@@ -42,8 +39,8 @@ export const Scroll = {
 		this._data.ease = ease || 0.2;
 
 		// Bind functions and register event listeners
-		E.bind(this, ['_setScroll', '_calcSpeed']);
-		E.add(window, "scroll", this._setScroll);
+		utils.bind(this, ['_setScroll', '_calcSpeed']);
+		window.addEventListener("scroll", this._setScroll, false);
 
 		// OPTIONAL: Calculate Scroll speed
 		if(speed) this._data.speedFn = R.add(this._calcSpeed);
@@ -54,7 +51,7 @@ export const Scroll = {
 		if(!this._data.isActive) return
 
 		// Reomve event listener
-		E.remove(window, "scroll", this._setScroll);
+		window.removeEventListener("scroll", this._setScroll, false);
 
 		// Reomve _calcSpeed from rendern queue
 		if(this._data.speedFn) this._data.speedFn = R.remove(this._data.speedFn);

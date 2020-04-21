@@ -4,23 +4,18 @@
 *
 *************************************/
 
-import {E} from '../Element/E.js';
-import {S} from '../Element/S.js';
-import {R} from '../R.js';
-import {G} from '../G.js';
-import {Scroll} from './ScrollObserver.js';
 
 export class ScrollReveal {
 	
 	constructor() {
-		E.bind(this, ['_observeEls']);
+		// E.bind(this, ['_observeEls']);
 
 
-		this.cache = this._fillCache();
+		// this.cache = this._fillCache();
 
-		Scroll.start();
+		// Scroll.start();
 
-		this.raf = R.add(this._observeEls);
+		// this.raf = R.add(this._observeEls);
 	}
 
 	_fillCache() {
