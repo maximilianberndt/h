@@ -17,15 +17,15 @@ export const map = function (v, a, z, b, y) {
     return b + (y - b) * ((v - a) / (z - a))
 }
 
-export const lerp = function (a, z, m) {
-    return b + (y - b) * ((v - a) / (z - a))
+export const lerp = function (v0, v1, t) {
+    return v0 * (1 - t) + v1 * t
 }
 
 export const clamp = function (v, a, z) {
     return Math.min(Math.max(v, a), z);
 }
 
-export const dist = function (v, a, z, b, y) {
+export const dist = function (a, z, b, y) {
     return Math.hypot(a - b, z - y)
 }
 
